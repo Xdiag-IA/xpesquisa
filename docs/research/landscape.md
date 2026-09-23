@@ -8,6 +8,8 @@ Consulta: 23/09/2026. Inspeção de README, licença e arquivos selecionados; n�
 
 Estrutura observada: `src`, `extensions`, `skills`, `prompts`, `.feynman/agents`, `tests` e `workbench-web`. Runtime baseado em Pi; ferramentas de literatura e workflows são separados da interface. O README descreve researcher, reviewer, writer e verifier. Inspecionados `prompts/deepresearch.md`, `.feynman/agents/verifier.md` e `src/workbench/artifact-provenance-ledgers.ts`: há planos, saídas intermediárias, verificação por instruções e snapshots com hashes e dependências entre artefatos.
 
+Inspeção complementar: `extensions/research-tools.ts` agrega módulos; `extensions/research-tools/science-database-pubmed.ts` especializa o acesso NCBI e utiliza helpers próprios. XPesquisa mantém um conector oficial pequeno por fonte.
+
 Aprendizado para XPesquisa: guardar etapas e vínculos; não reduzir provenance a uma bibliografia final. Limitação para nosso caso: instruções de verificação não substituem invariantes testáveis de Claim–Evidence; um runtime amplo de pesquisa e computação aumentaria o escopo inicial. Não encontramos, nos arquivos inspecionados, um contrato específico para saúde brasileira. Isso não prova sua ausência no restante do projeto.
 
 ## PaperQA

@@ -1,3 +1,57 @@
 <!doctype html>
-<html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>XPesquisa</title><body><h1>XPesquisa</h1><p>Pesquisa científica aberta para a saúde brasileira.</p><p>Núcleo local em desenvolvimento.</p></body></html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XPesquisa · Evidências em perspectiva</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Ir para o conteúdo</a>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="XPesquisa, início"><span class="brand-mark">X<span>p</span></span> XPesquisa<span class="alpha">α</span></a>
+  <p class="org">UMA INICIATIVA XDIAG TECNOLOGIAS</p>
+  <button id="new" class="new-button">＋ Nova pesquisa</button>
+  <div class="section-label">CADERNO DE PESQUISAS</div>
+  <nav id="history" aria-label="Histórico"><p class="muted">Nenhuma pesquisa ainda.</p></nav>
+  <div class="sidebar-bottom"><span class="local-dot"></span> Ambiente local <span id="version">0.1.0</span><p>Ciência aberta. Raciocínio rastreável.</p></div>
+</aside>
+<div class="workspace">
+  <header><span>Biblioteca de evidências <span class="slash">/</span> Pesquisa exploratória</span><span class="tag">PRÉVIA EXPERIMENTAL</span></header>
+  <main id="main">
+    <section class="intro">
+      <div class="eyebrow">DA PERGUNTA À FONTE</div>
+      <h1>Evidências em perspectiva.</h1>
+      <p>Investigue a literatura. Examine os achados.<br>Saiba de onde vem cada afirmação.</p>
+    </section>
+    <form id="research-form" class="search-card">
+      <label for="question">O que você quer investigar?</label>
+      <textarea id="question" rows="3" minlength="8" maxlength="2000" required placeholder="Formule uma pergunta de pesquisa em saúde..."></textarea>
+      <div class="search-bottom"><span class="source-pill">Europe PMC <span>· literatura biomédica</span></span><button type="submit" id="submit">Investigar literatura <span>↗</span></button></div>
+      <details class="advanced"><summary>Estratégia de busca e limite</summary><label for="query">Query opcional — termos em inglês ou sintaxe Europe PMC</label><input id="query" maxlength="1000" placeholder='Ex.: elastography AND liver AND fibrosis'><label for="limit">Número máximo de artigos</label><select id="limit"><option>5</option><option selected>8</option><option>12</option><option>20</option></select><p>A busca é exploratória e ordenada por relevância. Você pode ajustar os termos antes de executar.</p></details>
+    </form>
+    <div id="example-row"><span>COMECE POR UMA PERGUNTA</span><button id="example">Elastografia hepática e fibrose <span>↗</span></button></div>
+    <p class="research-note">Para pesquisa, educação e atualização científica. Não substitui o julgamento clínico. Não insira dados identificáveis de pacientes.</p>
+    <div id="message" role="status" aria-live="polite"></div>
+    <section id="empty" class="principles" aria-label="Princípios da pesquisa">
+      <article><span class="step">01 / ENCONTRAR</span><h2>Fontes identificáveis</h2><p>Artigos reais, metadados e uma estratégia de busca que você pode inspecionar.</p></article>
+      <article><span class="step">02 / RASTREAR</span><h2>O caminho da evidência</h2><p>Da afirmação ao trecho original. Cada vínculo fica registrado no seu caderno.</p></article>
+      <article><span class="step">03 / QUESTIONAR</span><h2>Incerteza à vista</h2><p>Limitações explícitas. O que não foi avaliado permanece como não avaliado.</p></article>
+    </section>
+    <section id="result" hidden aria-label="Resultado da pesquisa">
+      <div class="result-top"><div><span class="eyebrow">CADERNO DE EVIDÊNCIAS</span><h2 id="result-title"></h2></div><a id="export" class="outline" href="#">Exportar metadados ↓</a></div>
+      <div id="progress" class="progress" role="status" aria-live="polite"></div>
+      <div id="stats" class="stats"></div>
+      <div class="tabs" role="tablist" aria-label="Visões da pesquisa">
+        <button role="tab" id="tab-synthesis" aria-controls="synthesis" aria-selected="true" data-tab="synthesis">Síntese e achados</button>
+        <button role="tab" id="tab-sources" aria-controls="sources" aria-selected="false" data-tab="sources">Fontes</button>
+        <button role="tab" id="tab-trace" aria-controls="trace" aria-selected="false" data-tab="trace">Rastreabilidade</button>
+      </div>
+      <div id="synthesis" role="tabpanel" aria-labelledby="tab-synthesis"></div>
+      <div id="sources" role="tabpanel" aria-labelledby="tab-sources" hidden></div>
+      <div id="trace" role="tabpanel" aria-labelledby="tab-trace" hidden></div>
+    </section>
+    <footer>XPesquisa <span>Pesquisa científica aberta para a saúde brasileira.</span><span>DESENVOLVIDO NO BRASIL</span></footer>
+  </main>
+</div>
+</body></html>
