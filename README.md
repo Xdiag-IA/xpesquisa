@@ -11,8 +11,8 @@ Criada pela **Xdiag Tecnologias**, no Brasil, para apoiar pesquisa, educação e
 | Situação | Informação |
 |---|---|
 | Versão | **0.2.0 — protótipo funcional para uso local** |
-| Repositório | **Privado**, acessível somente a pessoas autorizadas |
-| Licença do código | Apache-2.0; abertura pública futura depende da Xdiag |
+| Repositório | **Público**, aberto para consulta e propostas de contribuição |
+| Licença do código | Apache-2.0 |
 | Interface | Navegador, em português do Brasil |
 | Modo padrão | Síntese extrativa, sem exigir modelo de IA ou API paga |
 | Fontes integradas | Europe PMC, base de normas CFM/CRMs, sites SBH e CBR |
@@ -45,7 +45,7 @@ O uso atual é exploratório e local. Não foi validado para tomar decisões cl�
 
 **Visitar o GitHub não executa o aplicativo.** Enviar o código também não cria um serviço público na internet. Hospedagem compartilhada, autenticação multiusuário e operação de produção ainda precisam ser desenvolvidas.
 
-O projeto está sendo preparado para uma trajetória open source, mas permanece privado nesta etapa. Licença e visibilidade são decisões distintas. Pessoas autorizadas podem colaborar sem tornar o repositório público; a abertura futura depende da Xdiag.
+O projeto é open source, com repositório público e código sob Apache-2.0. Qualquer pessoa pode consultar o código, criar um fork e propor contribuições. A integração de mudanças e a concessão de acesso de escrita permanecem sob responsabilidade dos mantenedores da Xdiag.
 
 ## O que já funciona
 
@@ -145,7 +145,7 @@ Resultados podem incluir cartas, estudos animais, notícias e materiais pouco pe
 
 ## Instalação e primeiro acesso
 
-Requisitos: **Python 3.10 ou superior**, Git e acesso autorizado a este repositório privado. Node, conta em fornecedor de IA e API paga não são necessários para executar o aplicativo. Novas consultas requerem internet.
+Requisitos: **Python 3.10 ou superior**, Git. O repositório é público e pode ser clonado sem convite. Node, conta em fornecedor de IA e API paga não são necessários para executar o aplicativo. Novas consultas requerem internet.
 
 ### Windows — PowerShell
 
@@ -275,9 +275,9 @@ Essa lista expressa direção, sem promessa de prazo. O [roadmap](docs/roadmap.m
 
 Profissionais de saúde podem trazer perguntas representativas, avaliar pertinência, indicar fontes e revisar achados. Desenvolvedores podem contribuir com conectores, testes, interface e documentação. Especialistas em informação científica podem ajudar com estratégias de busca e seleção.
 
-No repositório privado, é necessário acesso concedido pelo mantenedor. **Issue** registra problema ou proposta; **pull request** apresenta alteração para revisão. Comece por uma contribuição delimitada, explique a motivação e registre como foi validada.
+O repositório é público. Para contribuir com código, crie um fork e envie uma proposta para revisão. **Issue** registra problema ou proposta; **pull request** apresenta alteração para revisão. Comece por uma contribuição delimitada, explique a motivação e registre como foi validada.
 
-Leia [CONTRIBUTING.md](CONTRIBUTING.md), [Código de Conduta](CODE_OF_CONDUCT.md) e [Segurança](SECURITY.md). Não envie dados de pacientes, credenciais ou textos de terceiros sem autorização de uso. Mudanças arquiteturais exigem ADR. Convites e abertura pública são decisões da Xdiag.
+Leia [CONTRIBUTING.md](CONTRIBUTING.md), [Código de Conduta](CODE_OF_CONDUCT.md) e [Segurança](SECURITY.md). Não envie dados de pacientes, credenciais ou textos de terceiros sem autorização de uso. Mudanças arquiteturais exigem ADR. Acesso de escrita e integração de mudanças são decisões dos mantenedores.
 
 ## Guia da documentação
 

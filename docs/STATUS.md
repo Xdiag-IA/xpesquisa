@@ -41,7 +41,7 @@ Revisar com profissionais de saúde o conjunto recuperado e definir uma pequena 
 - O usuário autorizou criar o repositório privado `Xdiag-IA/xpesquisa` e enviar o código existente.
 - README explica a diferença entre repositório e aplicativo local; CONTRIBUTING descreve Issues, branches e pull requests.
 - CI permanece disponível por acionamento manual, sem execução automática neste envio.
-- Não foram autorizados convites a colaboradores nem mudança para público. Não há implantação web nesta etapa.
+- Na etapa inicial, o repositório permaneceu privado, sem convites ou implantação web. A abertura pública posterior está registrada abaixo.
 
 ## Incremento 0.2 — fontes brasileiras e roteamento
 - Perguntas normativas consultam CFM/CRMs; temas hepáticos/imagem incluem SBH/CBR. Escopo manual e UF disponíveis.
@@ -50,3 +50,8 @@ Revisar com profissionais de saúde o conjunto recuperado e definir uma pequena 
 - BVS/LILACS, SciELO e legislação federal permanecem lacunas visíveis. O catálogo de sociedades ainda é limitado.
 - Busca real dos três conectores verificada; 49 testes passaram, incluindo bloqueios, redirects, texto comprimido, jurisdição, classificação e compatibilidade histórica. O CBR apresentou falha HTTP em uma execução integrada; resultados das outras fontes foram preservados.
 - Revisão automática bloqueou reinício do processo anterior sem motivo detalhado. Prévia 0.2 iniciada em **127.0.0.1:8788**, com cópia SQLite em **data/preview-0.2/xpesquisa.db**. A porta 8787 mantém a instância anterior. Novas pesquisas da prévia ficam nesse banco separado, não são sincronizadas automaticamente com o original.
+
+## Abertura pública — 2026-09-23
+- O usuário autorizou tornar público o repositório Xdiag-IA/xpesquisa. Visibilidade alterada no GitHub.
+- Capa, apresentação e guia de contribuição atualizados para código aberto e contribuições via fork/pull request.
+- Aplicativo continua local; nenhuma hospedagem pública ou concessão de acesso de escrita foi realizada.

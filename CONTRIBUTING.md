@@ -4,14 +4,14 @@ Leia README, docs/STATUS.md e ADRs. Crie uma branch com alteração pequena, exp
 
 Contribuições intencionais seguem Apache-2.0. Só submeta material que possa licenciar; registre origem, versão e licença de dependências em THIRD_PARTY_NOTICES.md. Não envie abstracts, PDFs, dados de pacientes ou chaves em fixtures: use dados sintéticos claramente identificados. Fixtures sintéticas não devem aparecer como resultados reais na interface. Não use scores automáticos como prova de qualidade clínica. Mudanças arquiteturais exigem ADR.
 
-## Colaboração no GitHub privado
+## Colaboração no GitHub
 
-É necessário convite de acesso ao repositório [Xdiag-IA/xpesquisa](https://github.com/Xdiag-IA/xpesquisa). O mantenedor concede acesso somente às pessoas escolhidas; não é preciso tornar o projeto público para colaborar.
+O repositório [Xdiag-IA/xpesquisa](https://github.com/Xdiag-IA/xpesquisa) é público. Qualquer pessoa pode consultar o código, criar um fork e propor alterações. Acesso direto de escrita é concedido pelos mantenedores.
 
 1. Leia o estado do projeto e abra uma Issue com a proposta ou problema, sem dados sensíveis.
-2. Clone o repositório e crie uma branch, por exemplo `feat/nome-da-melhoria`.
+2. Crie um fork, clone sua cópia e crie uma branch, por exemplo `feat/nome-da-melhoria`.
 3. Implemente uma alteração delimitada, atualize documentação e rode os testes locais.
-4. Envie a branch e abra um pull request para `main`, explicando o que mudou e como validou.
+4. Envie a branch ao seu fork e abra um pull request para `main` no repositório original, explicando o que mudou e como validou.
 5. Aguarde revisão antes da integração. Esta é uma convenção da equipe; proteção obrigatória de branch ainda não foi configurada.
 
-O workflow de testes pode ser iniciado manualmente na aba Actions por quem tiver permissão. Nesta etapa privada ele não roda automaticamente a cada envio, para evitar consumo não planejado de minutos. A execução de CI e seus limites devem ser definidos pelo mantenedor antes de habilitar disparos automáticos. Não publique o repositório, distribua dados locais ou convide terceiros sem autorização da Xdiag.
+O workflow de testes pode ser iniciado manualmente na aba Actions por quem tiver permissão. Ele permanece manual e não roda automaticamente a cada envio, para evitar consumo não planejado de minutos. A execução de CI e seus limites devem ser definidos pelo mantenedor antes de habilitar disparos automáticos. Não distribua dados locais ou credenciais. A concessão de acesso de escrita depende dos mantenedores.

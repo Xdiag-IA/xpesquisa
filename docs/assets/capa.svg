@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
   <title id="title">XPesquisa — uma iniciativa Xdiag Tecnologias</title>
-  <desc id="desc">Pesquisa científica com fontes, contexto brasileiro e rastreabilidade. Versão 0.2, desenvolvimento privado, uso local.</desc>
+  <desc id="desc">Pesquisa científica com fontes, contexto brasileiro e rastreabilidade. Versão 0.2, código aberto, uso local.</desc>
   <rect width="1280" height="420" rx="24" fill="#163d40"/>
   <circle cx="1160" cy="80" r="210" fill="#214e50"/>
   <circle cx="1160" cy="80" r="150" fill="none" stroke="#8ba89b" stroke-opacity=".25" stroke-width="2"/>
@@ -10,5 +10,5 @@
   <text x="64" y="224" fill="#f4f5ef" font-family="Arial, sans-serif" font-size="29">Pesquisa científica com fontes,</text>
   <text x="64" y="264" fill="#f4f5ef" font-family="Arial, sans-serif" font-size="29">contexto brasileiro e rastreabilidade.</text>
   <rect x="64" y="320" width="690" height="46" rx="23" fill="#244e50" stroke="#567772"/>
-  <text x="88" y="350" fill="#dce6dc" font-family="Arial, sans-serif" font-size="18">VERSÃO 0.2  ·  DESENVOLVIMENTO PRIVADO  ·  USO LOCAL</text>
+  <text x="88" y="350" fill="#dce6dc" font-family="Arial, sans-serif" font-size="18">VERSÃO 0.2  ·  CÓDIGO ABERTO  ·  USO LOCAL</text>
 </svg>
