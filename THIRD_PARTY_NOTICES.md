@@ -23,4 +23,3 @@ Incremento 0.2: conectores originais para busca pública CFM/CRMs e APIs públic
 # Incremento 0.3
 
 Conector original para a API pública Crossref e extensão do conector WordPress para SBUS. Nenhuma nova biblioteca adicionada. Metadados Crossref e eventuais abstracts têm condições distintas; abstracts e publicações institucionais podem manter direitos próprios. Documentação e fontes consultadas em `docs/research/expansion-0.3.md`.
-
