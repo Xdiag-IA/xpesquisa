@@ -1,97 +1,302 @@
+<p align="center">
+  <img src="docs/assets/capa.svg" alt="XPesquisa — pesquisa científica com fontes, contexto brasileiro e rastreabilidade. Uma iniciativa Xdiag Tecnologias." width="100%">
+</p>
+
 # XPesquisa
 
-**Plataforma open source de pesquisa e verificação de evidências para profissionais de saúde.**
+**Uma plataforma em desenvolvimento para pesquisar literatura científica, localizar normas profissionais e consultar publicações de sociedades médicas, mantendo cada achado ligado à sua fonte.**
 
-Projeto da Xdiag Tecnologias, criado no Brasil. Nome provisório. Pesquisa, educação e atualização científica; não é um sistema autônomo de diagnóstico nem substitui julgamento clínico.
+Criada pela **Xdiag Tecnologias**, no Brasil, para apoiar pesquisa, educação e atualização de profissionais de saúde. **XPesquisa é um nome provisório.** O projeto busca facilitar a investigação e a leitura crítica; não oferece diagnóstico autônomo, recomendação terapêutica validada ou parecer jurídico.
 
-## Como este projeto funciona
+| Situação | Informação |
+|---|---|
+| Versão | **0.2.0 — protótipo funcional para uso local** |
+| Repositório | **Privado**, acessível somente a pessoas autorizadas |
+| Licença do código | Apache-2.0; abertura pública futura depende da Xdiag |
+| Interface | Navegador, em português do Brasil |
+| Modo padrão | Síntese extrativa, sem exigir modelo de IA ou API paga |
+| Fontes integradas | Europe PMC, base de normas CFM/CRMs, sites SBH e CBR |
+| Validação registrada | 49 testes passaram; consultas reais documentadas em 23/09/2026 |
 
-O GitHub reúne o código, a documentação, as tarefas e as propostas de alteração. O aplicativo roda na máquina de quem o instala e é aberto pelo navegador. A busca consulta o Europe PMC; o histórico fica no banco local. Hospedagem de um serviço compartilhado é uma etapa futura.
+**Primeira visita:** [proposta](#por-que-o-projeto-existe) · [funcionalidades](#o-que-já-funciona) · [fontes](#fontes-e-cobertura-brasileira) · [limitações](#o-que-ainda-não-faz) · [instalação](#instalação-e-primeiro-acesso) · [colaboração](#como-colaborar).
 
-O repositório está em desenvolvimento **privado**, acessível apenas a pessoas autorizadas. Apache-2.0 é a licença escolhida para o código; isso não torna o repositório público automaticamente. Uma abertura pública futura depende de decisão da Xdiag. Colaboradores convidados poderão discutir melhorias em Issues e propor alterações por pull requests, seguindo [CONTRIBUTING.md](CONTRIBUTING.md).
+## Por que o projeto existe
 
-Status: MVP exploratório funcional, versão 0.2.0, uso local. Busca por assunto no Europe PMC, CFM/CRMs e sociedades brasileiras SBH/CBR, com cobertura por fonte, citações vinculadas, histórico SQLite e exportação de metadados. Veja [estado do projeto](docs/STATUS.md), [panorama](docs/research/landscape.md) e [decisões](docs/adr/0001-project-architecture.md).
+Uma pergunta em saúde pode exigir mais de uma classe de fonte. Artigos ajudam a investigar resultados científicos; conselhos profissionais publicam normas e pareceres; sociedades médicas divulgam documentos e atividades; bases brasileiras podem trazer material relevante para o contexto nacional. Pesquisar somente uma base pode deixar partes importantes da pergunta sem resposta.
 
-## Executar
+Também não basta produzir um texto fluente com uma lista de referências. É necessário saber **qual consulta foi feita, quais fontes responderam, qual trecho foi recuperado e o que ainda não foi verificado**. O XPesquisa está sendo construído em torno dessa rastreabilidade.
 
-Python 3.10 ou superior. Não exige Node, conta externa ou API paga.
+A proposta é reunir pesquisa, organização de achados e revisão humana em um caderno de evidências. A versão atual entrega a base desse fluxo. Avaliação metodológica, comparação de discordâncias e interpretação clínica estruturada são etapas futuras, não capacidades já prontas.
+
+## Para quem é
+
+- **Profissionais de saúde:** explorar um assunto e localizar documentos para leitura, com atenção ao contexto brasileiro.
+- **Pesquisadores e estudantes:** acompanhar consultas, fontes e trechos em um histórico inspecionável.
+- **Especialistas e revisores:** avaliar a pertinência dos resultados e apontar lacunas ou interpretações inadequadas.
+- **Desenvolvedores e instituições colaboradoras:** ampliar conectores, melhorar o método e testar a confiabilidade.
+
+O uso atual é exploratório e local. Não foi validado para tomar decisões clínicas, emitir laudos ou orientar condutas individuais. Não insira dados identificáveis de pacientes.
+
+## GitHub, aplicativo e colaboração
+
+**Este repositório no GitHub** guarda código, documentação, histórico de mudanças e propostas de contribuição. É a página de apresentação e o espaço de desenvolvimento do projeto.
+
+**O aplicativo XPesquisa** é instalado em um computador e aberto pelo navegador desse computador. O navegador apresenta a interface; o serviço Python consulta fontes externas e grava o histórico em um banco local. Novas buscas requerem internet; o histórico permanece local.
+
+**Visitar o GitHub não executa o aplicativo.** Enviar o código também não cria um serviço público na internet. Hospedagem compartilhada, autenticação multiusuário e operação de produção ainda precisam ser desenvolvidas.
+
+O projeto está sendo preparado para uma trajetória open source, mas permanece privado nesta etapa. Licença e visibilidade são decisões distintas. Pessoas autorizadas podem colaborar sem tornar o repositório público; a abertura futura depende da Xdiag.
+
+## O que já funciona
+
+| Capacidade | Comportamento atual |
+|---|---|
+| Pergunta em linguagem natural | Aplica regras iniciais para selecionar fontes e termos de busca |
+| Escopo e estado | Permite escolher escopo e uma UF para consultas normativas |
+| Pesquisa científica | Consulta Europe PMC; o exemplo hepático utiliza o recorte MED |
+| Pesquisa normativa | Consulta resoluções e pareceres na base pública CFM/CRMs |
+| Sociedades médicas | Consulta publicações públicas da SBH e do CBR nos assuntos contemplados |
+| Cobertura transparente | Exibe consultas, resultados vazios, falhas, bloqueios e integrações pendentes |
+| Síntese extrativa | Seleciona trechos literais e os apresenta vinculados às fontes |
+| Rastreabilidade | Relaciona afirmação, evidência e fonte; registra consultas, datas, IDs e hashes |
+| Histórico | Preserva pesquisas em SQLite e permite reabrir resultados |
+| Navegação | Abas de síntese, fontes e rastreabilidade, com filtros documentais |
+| Exportação | Gera JSON de metadados e vínculos, sem redistribuir os textos recuperados |
+| IA local opcional | Adapter Ollama para rascunhos; o modo padrão não depende dele |
+
+Falhar em uma fonte não apaga resultados das outras. Uma consulta vazia é diferente de uma consulta que não pôde ser concluída. Pesquisas antigas preservam sua execução original e podem ser refeitas com as fontes atuais.
+
+## Como uma pesquisa acontece
+
+```mermaid
+flowchart TD
+    A[Pergunta e escopo] --> B[Plano de busca por regras]
+    B --> C[Literatura: Europe PMC]
+    B --> D[Normas: CFM e CRMs]
+    B --> E[Sociedades: SBH e CBR]
+    C --> F[Fontes e cobertura da consulta]
+    D --> F
+    E --> F
+    F --> G[Seleção e extração de trechos]
+    G --> H[Conferência de vínculos e texto literal]
+    H --> I[Síntese, fontes e rastreabilidade]
+    I --> J[Histórico local e exportação de metadados]
+```
+
+Nem toda pergunta consulta todas as fontes. O planejamento usa regras e vocabulário limitado, não compreensão universal. Alguns temas têm consultas controladas; outros ainda usam a pergunta literal. O escopo e a consulta podem ser ajustados pelos controles disponíveis.
+
+### Exemplo científico
+
+**“Qual é a evidência atual sobre elastografia hepática para avaliação de fibrose?”**
+
+No modo automático, a pergunta pode consultar Europe PMC e publicações da SBH/CBR. Resultados científicos e institucionais ficam identificados separadamente. Anúncios de cursos ou notícias sobre diretrizes não se transformam automaticamente em estudos ou diretrizes.
+
+### Exemplo normativo
+
+**“Como as normas brasileiras tratam o uso de inteligência artificial na medicina?”**
+
+O planejamento direciona a pesquisa para CFM/CRMs. Recupera ementas e metadados, exibindo a situação informada pela base. Selecionar uma UF mantém a consulta nacional e acrescenta a estadual. A interface mostra que legislação federal ainda não foi consultada automaticamente.
+
+Isso ajuda a localizar documentos para leitura. **Não constitui resposta jurídica completa:** a íntegra, a vigência independente e outras normas aplicáveis precisam ser verificadas.
+
+## Fontes e cobertura brasileira
+
+| Fonte | Estado | Conteúdo e limites |
+|---|---|---|
+| Europe PMC | Integrada | Metadados e abstracts disponíveis; sem leitura geral do texto integral e sem conector NCBI direto |
+| CFM/CRMs | Integrada | Ementa, número, ano, jurisdição e situação declarada de resoluções/pareceres; não lê a íntegra |
+| Sociedade Brasileira de Hepatologia — SBH | Integrada | Posts e páginas públicos; podem incluir notícias, eventos e anúncios |
+| Colégio Brasileiro de Radiologia — CBR | Integrada | Posts e páginas públicos; documentos e consultas podem apresentar falhas externas |
+| BVS/LILACS | Pendente | Lacuna explícita e link manual; não apresentada como já pesquisada |
+| SciELO | Pendente | Lacuna explícita e link manual |
+| Legislação federal / Diário Oficial | Pendente | Complementação manual; normas profissionais não equivalem a cobertura de leis federais |
+| Outras sociedades médicas | Pendente | Exigem ampliação do catálogo, do planejamento e dos conectores |
+
+A consulta é exploratória, limitada à primeira página. O limite configurável chega a 20 documentos científicos/normativos por consulta; sociedades têm limite de até 5 publicações por fonte. CFM nacional e estadual são consultas separadas. Esses limites não permitem declarar uma busca exaustiva.
+
+**E se o site não tiver uma caixa de busca?** Pode existir API pública ou outro acesso permitido. A implementação atual usa a busca pública CFM e APIs WordPress das duas sociedades. Ainda não existe motor geral que descubra e pesquise qualquer site. Não há contratação de busca paga nem contorno de bloqueios, login ou paywalls.
+
+Origem institucional brasileira não comprova população brasileira em um estudo. Ausência de resultados não comprova ausência de evidência ou norma. Consulte [fontes brasileiras: acesso e limites](docs/research/brazil-sources.md).
+
+## O que significa rastreabilidade
+
+| Elemento | Significado |
+|---|---|
+| **Fonte — Source** | Documento recuperado, com identificação, endereço e metadados disponíveis |
+| **Evidência — Evidence** | Trecho da fonte, com localização no texto normalizado e vínculo ao documento |
+| **Afirmação — Claim** | Achado apresentado ao leitor, ligado aos trechos utilizados |
+
+A conferência verifica referências internas, correspondência literal dos trechos e integridade dos registros. Referências científicas também podem ter ID, título e DOI reconferidos **na mesma base**. Hashes identificam o conteúdo registrado; não atestam sua veracidade.
+
+**Trecho conferido não significa interpretação validada.** Essas verificações não demonstram que uma inferência esteja correta, que um estudo tenha baixo risco de viés ou que seus resultados se apliquem a um paciente. DOI não é resolvido independentemente. Documentos institucionais não recebem validação independente de conteúdo ou vigência.
+
+## O que ainda não faz
+
+- Revisão sistemática completa, paginação exaustiva ou seleção clínica automatizada confiável.
+- Avaliação GRADE, risco de viés ou ranking metodológico validado.
+- Extração geral de população, amostra, intervenção e desfechos, ou determinação do país da população.
+- Verificação de retratações, busca ativa de evidência contrária ou adjudicação de discordâncias.
+- PICO/PECO geral ou tradução automática no modo extrativo.
+- Leitura automática de PDFs ou íntegra das normas; links relacionados podem servir apenas para abertura manual.
+- Cobertura de todas as bases brasileiras, de todos os CRMs fora da base consultada ou de todas as sociedades.
+- Serviço público com contas de usuário, controle de acesso e infraestrutura de produção.
+
+Resultados podem incluir cartas, estudos animais, notícias e materiais pouco pertinentes. A filtragem lexical inicial de textos institucionais reduz alguns falsos achados, mas não substitui avaliação humana de relevância. As limitações aparecem também no resultado da pesquisa.
+
+## Instalação e primeiro acesso
+
+Requisitos: **Python 3.10 ou superior**, Git e acesso autorizado a este repositório privado. Node, conta em fornecedor de IA e API paga não são necessários para executar o aplicativo. Novas consultas requerem internet.
+
+### Windows — PowerShell
 
 ```powershell
 git clone https://github.com/Xdiag-IA/xpesquisa.git
 cd xpesquisa
 python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install -c requirements.lock -e ".[dev]"
-xpesquisa serve
+.venv\Scripts\python -m pip install -c requirements.lock -e ".[dev]"
+.venv\Scripts\python -m xpesquisa.cli serve
 ```
 
-macOS/Linux: use `source .venv/bin/activate` para ativar o ambiente; demais comandos são iguais. Se o PowerShell impedir ativação, execute `.venv\Scripts\python -m pip install -e ".[dev]"` e `.venv\Scripts\python -m xpesquisa.cli serve`.
+Os comandos usam diretamente o ambiente virtual, sem exigir alteração da política de ativação do PowerShell.
 
-Abra http://127.0.0.1:8765. Contrato da API em `/docs`. As variáveis em `.env.example` devem ser definidas no ambiente do processo; não há leitura automática de `.env`.
+### macOS / Linux
 
-Se a porta estiver ocupada, use `xpesquisa serve --port 8787`. Nesta primeira execução, o aplicativo ficou disponível em **http://127.0.0.1:8787**. O processo que já utilizava 8765 foi preservado.
+```sh
+git clone https://github.com/Xdiag-IA/xpesquisa.git
+cd xpesquisa
+python3 -m venv .venv
+.venv/bin/python -m pip install -c requirements.lock -e '.[dev]'
+.venv/bin/python -m xpesquisa.cli serve
+```
 
-Na validação do incremento 0.2, a prévia atual está em **http://127.0.0.1:8788**, com cópia do histórico em `data/preview-0.2/xpesquisa.db`. A instância anterior em 8787 foi preservada após bloqueio automático de seu reinício. Novas pesquisas entre essas instâncias não são sincronizadas. Para reabrir a prévia no mesmo banco, defina `XPESQUISA_DATA_DIR=./data/preview-0.2` e execute `xpesquisa serve --port 8788` quando a porta estiver livre.
+Abra **http://127.0.0.1:8765** no mesmo computador. Use uma pergunta de exemplo, confira o escopo e clique em **Pesquisar fontes**. Acompanhe a cobertura e explore **Síntese e achados**, **Fontes** e **Rastreabilidade**.
 
-## Primeira pesquisa
+Se a porta estiver ocupada, acrescente `--port 8788` ao comando e abra a porta escolhida. `127.0.0.1` significa o próprio computador de quem abre o link; não é demonstração pública hospedada pela Xdiag.
 
-Use o exemplo “Qual é a evidência atual sobre elastografia hepática para avaliação de fibrose?” e clique em **Pesquisar fontes**. No modo automático, consulta Europe PMC e os sites de SBH/CBR. O exemplo de IA e normas médicas consulta CFM/CRMs, sem enviar uma pergunta jurídica à base biomédica. Selecione o escopo ou uma UF quando necessário. Esteatose/prevalência/Brasil também têm vocabulário inicial explícito. Para outras perguntas, a busca científica ainda pode ser literal; PICO e tradução geral não estão implementados.
+Detalhes da instalação de desenvolvimento, incluindo a prévia em 8788 e seu banco separado, estão no [estado do projeto](docs/STATUS.md). A porta padrão de novas instalações continua 8765.
 
-## Cobertura brasileira
+### Configuração
 
-- **CFM/CRMs:** busca pública de resoluções e pareceres; recupera ementa, número, ano, jurisdição e situação declarada. Selecionar estado mantém consulta nacional ao CFM. Não interpreta a íntegra nem confirma vigência de forma independente.
-- **SBH e CBR:** publicações públicas dos sites oficiais, selecionadas por assunto hepático/imagem. Notícias, cursos ou anúncios de diretrizes não são classificados como evidência clínica ou como diretrizes automaticamente.
-- **BVS/LILACS, SciELO e legislação federal:** lacunas explícitas com links para complemento manual; não são apresentadas como já consultadas. Outras sociedades ainda precisam de adapters.
+Defina as variáveis no ambiente do processo. [.env.example](.env.example) é referência: **não é carregado automaticamente**.
 
-O painel **Cobertura da pesquisa** mostra consultas, documentos, falhas e fontes não integradas. Falha parcial preserva as outras fontes. Sem resultados não significa ausência de norma ou evidência. Tipos documentais e instituição brasileira são filtros separados de país da população. Limite por fonte: até 20 documentos científicos/normativos (CFM nacional e estadual são consultas separadas); até 5 publicações por sociedade. Veja [acesso e limites das fontes](docs/research/brazil-sources.md).
+| Variável | Uso |
+|---|---|
+| `XPESQUISA_DATA_DIR` | Diretório do banco; padrão `./data` |
+| `XPESQUISA_PROVIDER` | `extractive` por padrão; `ollama` para experimentar modelo local |
+| `XPESQUISA_MODEL` | Nome de modelo já instalado no Ollama |
+| `XPESQUISA_OLLAMA_URL` | Endereço local; padrão `http://127.0.0.1:11434` |
+| `XPESQUISA_API_KEY` | Reservada; não utilizada neste MVP |
 
-Sites sem motor visível podem oferecer uma API pública. Neste incremento os adapters usam a busca pública CFM e a API WordPress das sociedades. Um motor geral de descoberta para qualquer site ainda não está implementado. Não há scraping de buscadores nem API paga.
+### IA local opcional
 
-Abra **Síntese e achados**, **Fontes** e **Rastreabilidade**. Cada achado liga a um trecho e a um artigo. A consulta de identidade compara ID, título e DOI quando presente, novamente na mesma base. DOI não é resolvido independentemente. Trecho conferido não significa que a fonte sustenta uma inferência, que o estudo tem baixo risco de viés ou que o resultado se aplica à população brasileira.
-
-O padrão não usa LLM: produz uma síntese extrativa, com achados no idioma da fonte e texto explicativo em português. Não produz avaliação clínica integrada. Para experimentar rascunhos em português com um modelo **já instalado** no Ollama:
+O padrão não chama LLM. Apresenta trechos no idioma da fonte e explicações de interface em português. Um modelo **já instalado** no Ollama pode produzir rascunhos:
 
 ```powershell
 $env:XPESQUISA_PROVIDER="ollama"
 $env:XPESQUISA_MODEL="nome-do-seu-modelo-local"
-xpesquisa serve --port 8787
+.venv\Scripts\python -m xpesquisa.cli serve
 ```
 
-No macOS/Linux, use `export XPESQUISA_PROVIDER=ollama` e `export XPESQUISA_MODEL=nome-do-seu-modelo-local`. O adapter aceita apenas loopback; nenhuma transferência de modelo ou chamada paga é feita pelo XPesquisa. Provider sem resposta ou com citações inválidas gera fallback extrativo registrado. Nenhum provider pode aprovar validade semântica automaticamente.
+No macOS/Linux, use `export XPESQUISA_PROVIDER=ollama` e `export XPESQUISA_MODEL=nome-do-seu-modelo-local`. O adapter aceita apenas loopback; XPesquisa não baixa modelos. Falhas de resposta ou citações inválidas acionam retorno ao modo extrativo, registrado no histórico. O adapter foi testado com mocks; modelo real ainda não foi validado neste marco.
 
-## Dados locais e exportação
+### Docker
 
-Banco em `data/xpesquisa.db`, fora do Git. `XPESQUISA_DATA_DIR` muda o diretório. Faça backup com o servidor parado, preservando a pasta de dados. Use somente uma instância por banco. Pesquisas interrompidas são marcadas como falhas no reinício. Histórico mostra as 50 mais recentes; a API por ID preserva acesso às demais.
-
-A exportação JSON contém metadados, IDs, vínculos, consultas, timestamps e hashes; omite textos recuperados, trechos, textos de afirmações e prompts com conteúdo científico. Não é formato de importação. As publicações mantêm seus direitos e a licença do código não autoriza republicação. Não contorna paywalls nem busca PDFs: usa APIs públicas e a página pública de resultados CFM, respeitando robots e bloqueios. Internet é necessária para consultas às fontes; histórico e interface são locais.
-
-## Docker
-
-```text
+```sh
 docker compose up --build
 ```
 
-Publica somente na interface local, porta 8765, com volume persistente. Para usar outra porta altere o lado esquerdo do mapeamento no Compose. Imagem não validada nesta máquina porque o engine Docker estava indisponível. Não exponha o serviço publicamente: o MVP não tem autenticação multiusuário.
+Publica somente na interface local, porta 8765, com volume persistente. Para mudar a porta, ajuste o lado esquerdo do mapeamento no Compose. O arquivo foi verificado sintaticamente, mas a imagem não foi validada porque o engine estava indisponível. O MVP não possui autenticação para exposição pública.
 
-## Limitações atuais
+## Dados, privacidade e exportação
 
-- Seleção pela primeira página da busca, até 20 registros; sem revisão sistemática, ranking metodológico ou garantia de cobertura.
-- Sem avaliação GRADE, risco de viés, retratações, extração clínica de população/amostra ou inferência de país. Estudos animais podem aparecer; leia título, tipo e abstract.
-- Catálogo brasileiro inicial restrito a CFM/CRMs e SBH/CBR; sem busca ativa de contraditório ou comparação longitudinal. A interface identifica essas lacunas.
-- Busca sem resultados não implica ausência de evidência. Falha de serviço é apresentada como falha, não como resultado vazio.
-- Verificação semântica exige revisão humana. LLM opcional produz rascunhos, nunca conclusões validadas.
-- Termos e copyright de cada fonte devem ser revistos antes de distribuir conteúdo. Acesso automatizado respeita robots e bloqueios; não implica licença de republicação.
+O banco padrão é `data/xpesquisa.db`, excluído do Git. Perguntas, resultados e registros permanecem no histórico local. **Local não significa sem comunicação externa:** os termos de busca são enviados às fontes consultadas. Não use dados identificáveis de pacientes nas perguntas.
 
-## Desenvolvimento
+Use somente uma instância por banco. Para backup simples, pare o servidor e preserve a pasta de dados. Pesquisas interrompidas são marcadas como falhas no reinício, sem retomada automática. O histórico lista as 50 mais recentes; a API mantém acesso por ID às demais.
+
+A exportação JSON inclui metadados, IDs, vínculos, consultas, timestamps e hashes. Omite textos recuperados, trechos, textos de afirmações e prompts com conteúdo científico. **As consultas permanecem na exportação:** revise-as antes de compartilhar. O arquivo não é formato de importação nem backup completo.
+
+Apache-2.0 cobre o código, não os artigos ou documentos recuperados. Acesso público e permissão em robots não concedem automaticamente direito de republicação. Publicações e dependências mantêm seus próprios termos.
+
+## Arquitetura e organização
+
+Backend em **Python, FastAPI e Pydantic**, HTTPX para fontes e SQLite para persistência. Interface em HTML, CSS e JavaScript, sem build obrigatório e sem CDN. O núcleo é independente de fornecedores de IA e de produtos clínicos da Xdiag.
 
 ```text
-python -m pytest
+src/xpesquisa/
+  api.py           Serviço HTTP e endpoints
+  cli.py           Inicialização local
+  models.py        Contratos de pesquisa, fonte, evidência e afirmação
+  planning.py      Planejamento e escolha das fontes
+  connectors.py    Conector científico e normalização de texto
+  brazil.py        Acesso a normas e sociedades brasileiras
+  pipeline.py      Execução, seleção, conferências e síntese
+  providers.py     Modo extrativo e adapter Ollama
+  web/             Interface em português
+tests/             Testes com dados sintéticos
+docs/              Estado, validação, pesquisa e decisões arquiteturais
 ```
 
-Testes usam mocks sintéticos, sem chamadas externas ou pagas. A prova real está em [docs/validation.md](docs/validation.md); é separada da suíte padrão. `requirements.lock` fixa as versões verificadas; instalação com `-c` aplica essas restrições. CI multiplataforma foi preparada, mas ainda não executada remotamente.
+A documentação da API está em `/docs` no aplicativo em execução.
 
-Arquitetura: FastAPI + Pydantic → planejamento → Europe PMC → seleção → extração → verificação → provider → SQLite → interface pt-BR. Módulos em `src/xpesquisa/`; contratos em `models.py`; interface sem CDN em `web/`. Consulte os ADRs para alternativas e consequências. A API é independente de fornecedores de IA e de produtos clínicos da Xdiag.
+| Método e caminho | Finalidade |
+|---|---|
+| `GET /api/health` | Estado básico do serviço |
+| `POST /api/research` | Iniciar pesquisa |
+| `GET /api/research` | Histórico recente |
+| `GET /api/research/{run_id}` | Pesquisa e registros |
+| `GET /api/research/{run_id}/export` | Exportação de metadados |
 
-## Contribuir e licença
+## Validação e qualidade
 
-[CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Código Apache-2.0, conforme [LICENSE](LICENSE); nomes e marcas conforme [TRADEMARKS.md](TRADEMARKS.md). Artigos científicos e dependências mantêm suas próprias licenças. Nenhum projeto externo foi copiado. Repositório: [Xdiag-IA/xpesquisa](https://github.com/Xdiag-IA/xpesquisa), inicialmente privado. O envio do código não publica o aplicativo como serviço web.
+Na validação registrada da versão 0.2, **49 testes passaram**. A suíte usa dados sintéticos e mocks, sem chamadas externas ou pagas. Inclui vínculos inválidos, trechos adulterados, falhas versus vazio, bloqueios, redirects, classificação documental e compatibilidade histórica.
+
+Consultas reais foram feitas separadamente: a pesquisa normativa localizou documentos CFM/CRMs; a hepática recuperou artigos e publicações SBH. O CBR respondeu em teste isolado, mas apresentou falha HTTP em uma execução integrada, registrada sem apagar outros resultados.
+
+Isso demonstra comportamento do software e rastreabilidade, **não eficácia clínica ou cobertura completa**. Detalhes e limites de Docker, Ollama e CI estão em [validação](docs/validation.md).
+
+```powershell
+.venv\Scripts\python -m pytest
+```
+
+No macOS/Linux, use `.venv/bin/python -m pytest`. As versões verificadas estão em `requirements.lock`; instalar com `-c` aplica essas restrições. O workflow CI é manual e a matriz remota ainda não foi validada.
+
+## Próximas etapas
+
+1. **Ampliar o Brasil:** BVS/LILACS, SciELO, legislação federal e outras sociedades, com revisão de acesso e direitos.
+2. **Melhorar a busca:** vocabulário DeCS/MeSH, planejamento editável, paginação e critérios de seleção.
+3. **Estruturar evidências:** população, amostra e desfechos, com trecho de suporte para cada campo.
+4. **Aprofundar a verificação:** resolução independente de IDs e avaliação semântica com especialistas.
+5. **Trabalhar discordâncias:** busca ativa de evidência contrária, comparação e revisão humana.
+6. **Preparar colaboração ampliada:** avaliação de uso, segurança e operação antes de um serviço compartilhado.
+
+Essa lista expressa direção, sem promessa de prazo. O [roadmap](docs/roadmap.md) descreve critérios para avançar sem apresentar recursos incompletos como prontos.
+
+## Como colaborar
+
+Profissionais de saúde podem trazer perguntas representativas, avaliar pertinência, indicar fontes e revisar achados. Desenvolvedores podem contribuir com conectores, testes, interface e documentação. Especialistas em informação científica podem ajudar com estratégias de busca e seleção.
+
+No repositório privado, é necessário acesso concedido pelo mantenedor. **Issue** registra problema ou proposta; **pull request** apresenta alteração para revisão. Comece por uma contribuição delimitada, explique a motivação e registre como foi validada.
+
+Leia [CONTRIBUTING.md](CONTRIBUTING.md), [Código de Conduta](CODE_OF_CONDUCT.md) e [Segurança](SECURITY.md). Não envie dados de pacientes, credenciais ou textos de terceiros sem autorização de uso. Mudanças arquiteturais exigem ADR. Convites e abertura pública são decisões da Xdiag.
+
+## Guia da documentação
+
+| Documento | O que encontrar |
+|---|---|
+| [Estado do projeto](docs/STATUS.md) | Marcos, ambiente local e problemas conhecidos |
+| [Validação](docs/validation.md) | Testes, provas reais e o que não foi validado |
+| [Roadmap](docs/roadmap.md) | Próximos incrementos e critérios de avanço |
+| [Fontes brasileiras](docs/research/brazil-sources.md) | Métodos de acesso, limites e direitos |
+| [Panorama de projetos](docs/research/landscape.md) | Referências estudadas e contexto |
+| [Decisões arquiteturais](docs/adr/) | Justificativas das escolhas técnicas |
+| [Contribuição](CONTRIBUTING.md) | Fluxo para propor e revisar mudanças |
+| [Avisos de terceiros](THIRD_PARTY_NOTICES.md) | Dependências e atribuições |
+| [Licença](LICENSE) e [marcas](TRADEMARKS.md) | Regras do código e uso de nomes e marcas |
+
+---
+
+**XPesquisa · Uma iniciativa Xdiag Tecnologias**
+
+Pesquisa, educação e atualização científica com fontes visíveis e limites explícitos.
+
+[Repositório oficial](https://github.com/Xdiag-IA/xpesquisa) · Documentação consolidada em 23 de setembro de 2026.
