@@ -22,7 +22,7 @@ Esta prova valida acesso e rastreabilidade, não qualidade clínica da resposta.
 
 - Modelo Ollama real: adapter coberto por mocks, sem modelo instalado/configurado para este teste.
 - Docker: engine local indisponível; configuração fornecida, imagem não construída.
-- Windows/macOS/Linux em CI: workflow preparado, nenhuma publicação/execução remota autorizada.
+- Windows/macOS/Linux em CI: workflow preparado, não executado no primeiro marco. Posteriormente foi autorizado enviar o código para um repositório privado; o workflow permanece manual e a matriz remota ainda não foi validada.
 - Avaliação clínica, GRADE, verificação semântica e contraditório: não implementados.
 
 Aviso conhecido de dependência: Starlette 1.7 recomenda httpx2 para seu TestClient. A suíte com HTTPX 0.28 passa; migração futura do cliente de testes deverá verificar licença e compatibilidade, sem alterar o conector por causa apenas do aviso.

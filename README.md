@@ -4,6 +4,12 @@
 
 Projeto da Xdiag Tecnologias, criado no Brasil. Nome provisório. Pesquisa, educação e atualização científica; não é um sistema autônomo de diagnóstico nem substitui julgamento clínico.
 
+## Como este projeto funciona
+
+O GitHub reúne o código, a documentação, as tarefas e as propostas de alteração. O aplicativo roda na máquina de quem o instala e é aberto pelo navegador. A busca consulta o Europe PMC; o histórico fica no banco local. Hospedagem de um serviço compartilhado é uma etapa futura.
+
+O repositório está em desenvolvimento **privado**, acessível apenas a pessoas autorizadas. Apache-2.0 é a licença escolhida para o código; isso não torna o repositório público automaticamente. Uma abertura pública futura depende de decisão da Xdiag. Colaboradores convidados poderão discutir melhorias em Issues e propor alterações por pull requests, seguindo [CONTRIBUTING.md](CONTRIBUTING.md).
+
 Status: MVP exploratório funcional, uso local. Busca real no Europe PMC, metadados, trechos literais de abstracts, citações vinculadas, histórico SQLite, rastreabilidade e exportação de metadados. Veja [estado do projeto](docs/STATUS.md), [panorama](docs/research/landscape.md) e [decisões](docs/adr/0001-project-architecture.md).
 
 ## Executar
@@ -11,6 +17,8 @@ Status: MVP exploratório funcional, uso local. Busca real no Europe PMC, metada
 Python 3.10 ou superior. Não exige Node, conta externa ou API paga.
 
 ```powershell
+git clone https://github.com/Xdiag-IA/xpesquisa.git
+cd xpesquisa
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -c requirements.lock -e ".[dev]"
@@ -74,4 +82,4 @@ Arquitetura: FastAPI + Pydantic → planejamento → Europe PMC → seleção �
 
 ## Contribuir e licença
 
-[CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Código Apache-2.0, conforme [LICENSE](LICENSE); nomes e marcas conforme [TRADEMARKS.md](TRADEMARKS.md). Artigos científicos e dependências mantêm suas próprias licenças. Nenhum projeto externo foi copiado. Não há repositório remoto ou publicação configurados.
+[CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Código Apache-2.0, conforme [LICENSE](LICENSE); nomes e marcas conforme [TRADEMARKS.md](TRADEMARKS.md). Artigos científicos e dependências mantêm suas próprias licenças. Nenhum projeto externo foi copiado. Repositório: [Xdiag-IA/xpesquisa](https://github.com/Xdiag-IA/xpesquisa), inicialmente privado. O envio do código não publica o aplicativo como serviço web.
