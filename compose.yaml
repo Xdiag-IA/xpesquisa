@@ -1,0 +1,12 @@
+services:
+  xpesquisa:
+    build: .
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - pesquisa-data:/app/data
+    environment:
+      XPESQUISA_PROVIDER: extractive
+    restart: unless-stopped
+volumes:
+  pesquisa-data:
