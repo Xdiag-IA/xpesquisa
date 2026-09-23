@@ -22,6 +22,8 @@ class ResearchRequest(Record):
     question: str = Field(min_length=8, max_length=2000)
     query: str | None = Field(default=None, max_length=1000)
     limit: int = Field(default=8, ge=1, le=20)
+    scope: Literal["auto", "literature", "brazil", "regulation"] = "auto"
+    uf: str | None = Field(default=None, pattern=r"^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$")
 
     @model_validator(mode="after")
     def trim(self):
@@ -30,6 +32,25 @@ class ResearchRequest(Record):
         if len(self.question) < 8:
             raise ValueError("Escreva uma pergunta com pelo menos 8 caracteres.")
         return self
+
+
+class SearchTask(Record):
+    connector: str
+    label: str
+    query: str
+    reason: str
+    manual_url: str | None = None
+
+
+class Coverage(Record):
+    connector: str
+    label: str
+    query: str
+    reason: str
+    status: Literal["planned", "searching", "success", "empty", "failed", "blocked", "not_integrated"] = "planned"
+    count: int = 0
+    message: str = ""
+    manual_url: str | None = None
 
 
 class Plan(Record):
@@ -41,6 +62,8 @@ class Plan(Record):
     comparator: str | None = None
     outcome: str | None = None
     limitations: list[str] = Field(default_factory=list)
+    intent: Literal["literature", "regulation", "brazil"] = "literature"
+    searches: list[SearchTask] = Field(default_factory=list)
 
 
 class Source(Record):
@@ -62,6 +85,14 @@ class Source(Record):
     response_sha256: str
     metadata_status: Literal["retrieved"] = "retrieved"
     identifier_status: Literal["not_checked", "matched", "mismatch", "unavailable"] = "not_checked"
+    document_type: Literal["scientific_article", "regulation", "institutional"] = "scientific_article"
+    content_kind: Literal["abstract", "ementa", "institutional_text"] = "abstract"
+    institution_country: str | None = None
+    jurisdiction: str | None = None
+    regulatory_status: str | None = None
+    retrieval_url: str | None = None
+    related_urls: list[str] = Field(default_factory=list)
+    selection_note: str | None = None
 
 
 class Evidence(Record):
@@ -103,8 +134,8 @@ class Event(Record):
 
 
 class Run(Record):
-    schema_version: str = "0.1.0"
-    pipeline_version: str = "0.1.0"
+    schema_version: str = "0.2.0"
+    pipeline_version: str = "0.2.0"
     id: str = Field(default_factory=uid)
     request: ResearchRequest
     created_at: datetime = Field(default_factory=now)
@@ -120,6 +151,7 @@ class Run(Record):
     provider: str = "extractive"
     model: str | None = None
     error: str | None = None
+    coverage: list[Coverage] = Field(default_factory=list)
 
 
 def validate_links(run: Run) -> None:

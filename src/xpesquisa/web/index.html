@@ -14,7 +14,7 @@
   <button id="new" class="new-button">＋ Nova pesquisa</button>
   <div class="section-label">CADERNO DE PESQUISAS</div>
   <nav id="history" aria-label="Histórico"><p class="muted">Nenhuma pesquisa ainda.</p></nav>
-  <div class="sidebar-bottom"><span class="local-dot"></span> Ambiente local <span id="version">0.1.0</span><p>Ciência aberta. Raciocínio rastreável.</p></div>
+  <div class="sidebar-bottom"><span class="local-dot"></span> Ambiente local <span id="version">0.2.0</span><p>Ciência aberta. Raciocínio rastreável.</p></div>
 </aside>
 <div class="workspace">
   <header><span>Biblioteca de evidências <span class="slash">/</span> Pesquisa exploratória</span><span class="tag">PRÉVIA EXPERIMENTAL</span></header>
@@ -27,10 +27,11 @@
     <form id="research-form" class="search-card">
       <label for="question">O que você quer investigar?</label>
       <textarea id="question" rows="3" minlength="8" maxlength="2000" required placeholder="Formule uma pergunta de pesquisa em saúde..."></textarea>
-      <div class="search-bottom"><span class="source-pill">Europe PMC <span>· literatura biomédica</span></span><button type="submit" id="submit">Investigar literatura <span>↗</span></button></div>
-      <details class="advanced"><summary>Estratégia de busca e limite</summary><label for="query">Query opcional — termos em inglês ou sintaxe Europe PMC</label><input id="query" maxlength="1000" placeholder='Ex.: elastography AND liver AND fibrosis'><label for="limit">Número máximo de artigos</label><select id="limit"><option>5</option><option selected>8</option><option>12</option><option>20</option></select><p>A busca é exploratória e ordenada por relevância. Você pode ajustar os termos antes de executar.</p></details>
+      <div class="routing-controls"><label for="scope">Onde pesquisar</label><select id="scope"><option value="auto">Automático — conforme a pergunta</option><option value="brazil">Brasil + literatura científica</option><option value="regulation">Normas profissionais brasileiras</option><option value="literature">Somente literatura científica</option></select><label for="uf">CRM / estado</label><select id="uf"><option value="">Todos / sem recorte estadual</option></select></div>
+      <div class="search-bottom"><span class="source-pill">Fontes por assunto <span>· ciência, normas e sociedades</span></span><button type="submit" id="submit">Pesquisar fontes <span>↗</span></button></div>
+      <details class="advanced"><summary>Estratégia de busca e limite</summary><label for="query">Termos opcionais — substituem a query automática em cada fonte</label><input id="query" maxlength="1000" placeholder='Ex.: inteligência artificial'><label for="limit">Limite de documentos por fonte</label><select id="limit"><option>5</option><option selected>8</option><option>12</option><option>20</option></select><p>Busca exploratória. Sites de sociedades: até 5 publicações por instituição. Neste catálogo: CFM/CRMs, SBH e CBR. BVS/LILACS, SciELO e legislação federal aparecem como lacunas, não como fontes já consultadas.</p></details>
     </form>
-    <div id="example-row"><span>COMECE POR UMA PERGUNTA</span><button id="example">Elastografia hepática e fibrose <span>↗</span></button></div>
+    <div id="example-row"><span>COMECE POR UMA PERGUNTA</span><button id="example">Elastografia hepática e fibrose <span>↗</span></button><button id="example-regulation" class="outline">IA e normas médicas no Brasil ↗</button></div>
     <p class="research-note">Para pesquisa, educação e atualização científica. Não substitui o julgamento clínico. Não insira dados identificáveis de pacientes.</p>
     <div id="message" role="status" aria-live="polite"></div>
     <section id="empty" class="principles" aria-label="Princípios da pesquisa">
@@ -39,9 +40,10 @@
       <article><span class="step">03 / QUESTIONAR</span><h2>Incerteza à vista</h2><p>Limitações explícitas. O que não foi avaliado permanece como não avaliado.</p></article>
     </section>
     <section id="result" hidden aria-label="Resultado da pesquisa">
-      <div class="result-top"><div><span class="eyebrow">CADERNO DE EVIDÊNCIAS</span><h2 id="result-title"></h2></div><a id="export" class="outline" href="#">Exportar metadados ↓</a></div>
+      <div class="result-top"><div><span class="eyebrow">CADERNO DE EVIDÊNCIAS</span><h2 id="result-title"></h2></div><div><button id="rerun" class="outline">Refazer com fontes atuais ↗</button><a id="export" class="outline" href="#">Exportar metadados ↓</a></div></div>
       <div id="progress" class="progress" role="status" aria-live="polite"></div>
       <div id="stats" class="stats"></div>
+      <div id="coverage" aria-label="Cobertura por fonte"></div>
       <div class="tabs" role="tablist" aria-label="Visões da pesquisa">
         <button role="tab" id="tab-synthesis" aria-controls="synthesis" aria-selected="true" data-tab="synthesis">Síntese e achados</button>
         <button role="tab" id="tab-sources" aria-controls="sources" aria-selected="false" data-tab="sources">Fontes</button>

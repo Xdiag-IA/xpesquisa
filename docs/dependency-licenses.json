@@ -262,17 +262,17 @@
   },
   {
     "name": "xpesquisa",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "license": "Apache-2.0",
     "classifiers": [],
     "license_files": [
-      "xpesquisa-0.1.0.dist-info/licenses/LICENSE",
-      "xpesquisa-0.1.0.dist-info/licenses/NOTICE"
+      "xpesquisa-0.2.0.dist-info/licenses/LICENSE",
+      "xpesquisa-0.2.0.dist-info/licenses/NOTICE"
     ]
   },
   {
     "name": "xpesquisa",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "license": "Apache-2.0",
     "classifiers": [],
     "license_files": [

@@ -10,7 +10,7 @@ O GitHub reúne o código, a documentação, as tarefas e as propostas de altera
 
 O repositório está em desenvolvimento **privado**, acessível apenas a pessoas autorizadas. Apache-2.0 é a licença escolhida para o código; isso não torna o repositório público automaticamente. Uma abertura pública futura depende de decisão da Xdiag. Colaboradores convidados poderão discutir melhorias em Issues e propor alterações por pull requests, seguindo [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Status: MVP exploratório funcional, uso local. Busca real no Europe PMC, metadados, trechos literais de abstracts, citações vinculadas, histórico SQLite, rastreabilidade e exportação de metadados. Veja [estado do projeto](docs/STATUS.md), [panorama](docs/research/landscape.md) e [decisões](docs/adr/0001-project-architecture.md).
+Status: MVP exploratório funcional, versão 0.2.0, uso local. Busca por assunto no Europe PMC, CFM/CRMs e sociedades brasileiras SBH/CBR, com cobertura por fonte, citações vinculadas, histórico SQLite e exportação de metadados. Veja [estado do projeto](docs/STATUS.md), [panorama](docs/research/landscape.md) e [decisões](docs/adr/0001-project-architecture.md).
 
 ## Executar
 
@@ -31,9 +31,21 @@ Abra http://127.0.0.1:8765. Contrato da API em `/docs`. As variáveis em `.env.e
 
 Se a porta estiver ocupada, use `xpesquisa serve --port 8787`. Nesta primeira execução, o aplicativo ficou disponível em **http://127.0.0.1:8787**. O processo que já utilizava 8765 foi preservado.
 
+Na validação do incremento 0.2, a prévia atual está em **http://127.0.0.1:8788**, com cópia do histórico em `data/preview-0.2/xpesquisa.db`. A instância anterior em 8787 foi preservada após bloqueio automático de seu reinício. Novas pesquisas entre essas instâncias não são sincronizadas. Para reabrir a prévia no mesmo banco, defina `XPESQUISA_DATA_DIR=./data/preview-0.2` e execute `xpesquisa serve --port 8788` quando a porta estiver livre.
+
 ## Primeira pesquisa
 
-Use o exemplo “Qual é a evidência atual sobre elastografia hepática para avaliação de fibrose?” e clique em **Investigar literatura**. A estratégia usa vocabulário explícito em inglês e registros MED do Europe PMC. Não é um conector direto NCBI/PubMed. Outras perguntas usam a consulta literal; edite a query em inglês para melhores resultados. O planejamento geral com PICO e tradução ainda não está implementado.
+Use o exemplo “Qual é a evidência atual sobre elastografia hepática para avaliação de fibrose?” e clique em **Pesquisar fontes**. No modo automático, consulta Europe PMC e os sites de SBH/CBR. O exemplo de IA e normas médicas consulta CFM/CRMs, sem enviar uma pergunta jurídica à base biomédica. Selecione o escopo ou uma UF quando necessário. Esteatose/prevalência/Brasil também têm vocabulário inicial explícito. Para outras perguntas, a busca científica ainda pode ser literal; PICO e tradução geral não estão implementados.
+
+## Cobertura brasileira
+
+- **CFM/CRMs:** busca pública de resoluções e pareceres; recupera ementa, número, ano, jurisdição e situação declarada. Selecionar estado mantém consulta nacional ao CFM. Não interpreta a íntegra nem confirma vigência de forma independente.
+- **SBH e CBR:** publicações públicas dos sites oficiais, selecionadas por assunto hepático/imagem. Notícias, cursos ou anúncios de diretrizes não são classificados como evidência clínica ou como diretrizes automaticamente.
+- **BVS/LILACS, SciELO e legislação federal:** lacunas explícitas com links para complemento manual; não são apresentadas como já consultadas. Outras sociedades ainda precisam de adapters.
+
+O painel **Cobertura da pesquisa** mostra consultas, documentos, falhas e fontes não integradas. Falha parcial preserva as outras fontes. Sem resultados não significa ausência de norma ou evidência. Tipos documentais e instituição brasileira são filtros separados de país da população. Limite por fonte: até 20 documentos científicos/normativos (CFM nacional e estadual são consultas separadas); até 5 publicações por sociedade. Veja [acesso e limites das fontes](docs/research/brazil-sources.md).
+
+Sites sem motor visível podem oferecer uma API pública. Neste incremento os adapters usam a busca pública CFM e a API WordPress das sociedades. Um motor geral de descoberta para qualquer site ainda não está implementado. Não há scraping de buscadores nem API paga.
 
 Abra **Síntese e achados**, **Fontes** e **Rastreabilidade**. Cada achado liga a um trecho e a um artigo. A consulta de identidade compara ID, título e DOI quando presente, novamente na mesma base. DOI não é resolvido independentemente. Trecho conferido não significa que a fonte sustenta uma inferência, que o estudo tem baixo risco de viés ou que o resultado se aplica à população brasileira.
 
@@ -51,7 +63,7 @@ No macOS/Linux, use `export XPESQUISA_PROVIDER=ollama` e `export XPESQUISA_MODEL
 
 Banco em `data/xpesquisa.db`, fora do Git. `XPESQUISA_DATA_DIR` muda o diretório. Faça backup com o servidor parado, preservando a pasta de dados. Use somente uma instância por banco. Pesquisas interrompidas são marcadas como falhas no reinício. Histórico mostra as 50 mais recentes; a API por ID preserva acesso às demais.
 
-A exportação JSON contém metadados, IDs, vínculos, consultas, timestamps e hashes; omite abstracts, trechos, textos de afirmações e prompts com conteúdo científico. Não é formato de importação. Os artigos mantêm seus direitos e a licença do código não autoriza republicação. Não contorna paywalls, não busca PDFs e não faz scraping. Internet é necessária para consultas à base; histórico e interface são locais.
+A exportação JSON contém metadados, IDs, vínculos, consultas, timestamps e hashes; omite textos recuperados, trechos, textos de afirmações e prompts com conteúdo científico. Não é formato de importação. As publicações mantêm seus direitos e a licença do código não autoriza republicação. Não contorna paywalls nem busca PDFs: usa APIs públicas e a página pública de resultados CFM, respeitando robots e bloqueios. Internet é necessária para consultas às fontes; histórico e interface são locais.
 
 ## Docker
 
@@ -65,10 +77,10 @@ Publica somente na interface local, porta 8765, com volume persistente. Para usa
 
 - Seleção pela primeira página da busca, até 20 registros; sem revisão sistemática, ranking metodológico ou garantia de cobertura.
 - Sem avaliação GRADE, risco de viés, retratações, extração clínica de população/amostra ou inferência de país. Estudos animais podem aparecer; leia título, tipo e abstract.
-- Sem integração brasileira, busca ativa de contraditório ou comparação longitudinal. A interface identifica essas lacunas.
+- Catálogo brasileiro inicial restrito a CFM/CRMs e SBH/CBR; sem busca ativa de contraditório ou comparação longitudinal. A interface identifica essas lacunas.
 - Busca sem resultados não implica ausência de evidência. Falha de serviço é apresentada como falha, não como resultado vazio.
 - Verificação semântica exige revisão humana. LLM opcional produz rascunhos, nunca conclusões validadas.
-- Termos e copyright de cada fonte devem ser revistos antes de distribuir conteúdo. Páginas Europe PMC de referência devolveram bloqueio neste ambiente; apenas a API oficial foi utilizada.
+- Termos e copyright de cada fonte devem ser revistos antes de distribuir conteúdo. Acesso automatizado respeita robots e bloqueios; não implica licença de republicação.
 
 ## Desenvolvimento
 

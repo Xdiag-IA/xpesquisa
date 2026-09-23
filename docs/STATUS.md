@@ -27,7 +27,7 @@
 
 ## O que falta / problemas conhecidos
 - Extração clínica estruturada, PICO geral, tradução, avaliação metodológica, GRADE, verificação semântica e retratações.
-- Fonte brasileira dedicada, classificação de país/população e módulo de contraditório.
+- Expansão além das primeiras fontes brasileiras, classificação de país/população e módulo de contraditório.
 - Busca limitada à primeira página. Resultados podem misturar estudo animal, revisão, carta e estudo clínico. Identificador válido não implica elegibilidade.
 - Filtragem clínica depende da extração futura; não existem filtros fictícios por tamanho amostral ou país.
 - Persistência local para uma instância; sem autenticação ou infraestrutura de produção. Interrupções são registradas no reinício, sem retomada automática.
@@ -35,10 +35,18 @@
 - Aviso de depreciação do TestClient da versão resolvida de Starlette, documentado na validação.
 
 ## Próximo passo recomendado
-Revisar com profissionais de saúde o conjunto recuperado e definir uma pequena avaliação de extração clínica/entailment. Em seguida, implementar resolução independente DOI/PMID e o primeiro conector brasileiro permitido. Consulte docs/roadmap.md. Este marco não declara concluídas todas as fases do produto.
+Revisar com profissionais de saúde o conjunto recuperado e definir uma pequena avaliação de extração clínica/entailment. Em seguida, implementar resolução independente DOI/PMID e ampliar conectores brasileiros/documentos normativos integrais com revisão de acesso. Consulte docs/roadmap.md. Este marco não declara concluídas todas as fases do produto.
 
 ## Colaboração privada no GitHub
 - O usuário autorizou criar o repositório privado `Xdiag-IA/xpesquisa` e enviar o código existente.
 - README explica a diferença entre repositório e aplicativo local; CONTRIBUTING descreve Issues, branches e pull requests.
 - CI permanece disponível por acionamento manual, sem execução automática neste envio.
 - Não foram autorizados convites a colaboradores nem mudança para público. Não há implantação web nesta etapa.
+
+## Incremento 0.2 — fontes brasileiras e roteamento
+- Perguntas normativas consultam CFM/CRMs; temas hepáticos/imagem incluem SBH/CBR. Escopo manual e UF disponíveis.
+- Metadados distinguem norma, publicação institucional e literatura científica. Ementa não equivale a íntegra e situação declarada não equivale a vigência verificada.
+- Painel de cobertura distingue fonte consultada, vazia, falha, bloqueada e não integrada. Falhas parciais não apagam outras fontes.
+- BVS/LILACS, SciELO e legislação federal permanecem lacunas visíveis. O catálogo de sociedades ainda é limitado.
+- Busca real dos três conectores verificada; 49 testes passaram, incluindo bloqueios, redirects, texto comprimido, jurisdição, classificação e compatibilidade histórica. O CBR apresentou falha HTTP em uma execução integrada; resultados das outras fontes foram preservados.
+- Revisão automática bloqueou reinício do processo anterior sem motivo detalhado. Prévia 0.2 iniciada em **127.0.0.1:8788**, com cópia SQLite em **data/preview-0.2/xpesquisa.db**. A porta 8787 mantém a instância anterior. Novas pesquisas da prévia ficam nesse banco separado, não são sincronizadas automaticamente com o original.

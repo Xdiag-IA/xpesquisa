@@ -20,15 +20,21 @@ def plain_text(value: str) -> str:
         def __init__(self):
             super().__init__(convert_charrefs=True)
             self.parts = []
+            self.skip = 0
 
         def handle_data(self, data):
-            self.parts.append(data)
+            if not self.skip:
+                self.parts.append(data)
 
         def handle_starttag(self, tag, attrs):
+            if tag in {"script", "style", "noscript"}:
+                self.skip += 1
             if tag in {"p", "h4", "br", "div", "section"}:
                 self.parts.append(" ")
 
         def handle_endtag(self, tag):
+            if tag in {"script", "style", "noscript"}:
+                self.skip = max(0, self.skip - 1)
             if tag in {"p", "h4", "div", "section"}:
                 self.parts.append(" ")
 

@@ -1,6 +1,17 @@
-# Validação do primeiro marco
+# Validação do XPesquisa
 
 Data: 2026-09-23. Ambiente: Windows, Python 3.10.11 e Node 22.19.0 apenas para checagem de sintaxe JavaScript. Versões Python resolvidas em requirements.lock. Testes usam dados sintéticos e não acionam a rede.
+
+## Incremento 0.2 — fontes brasileiras
+
+- **49 testes passaram**; sintaxe JavaScript e `git diff --check` passaram. Cobertura adicional: roteamento normativo, seleção de sociedades, consulta nacional e estadual, robots, bloqueios, redirects externos, respostas comprimidas, resultados vazios versus HTML inesperado, classificação institucional e compatibilidade com pesquisas antigas.
+- Pergunta original sobre legislação de IA na medicina, incluindo o erro de digitação “artifical”, executada pela interface. Registro `7671326f-3485-4102-ac83-0b07aa70cd52`: 8 candidatos do CFM/CRMs, 1 trecho selecionado da ementa da Resolução CFM 2454/2026. Outros candidatos ficam nas fontes, sem entrar automaticamente na síntese. Seleção lexical não equivale a validação semântica. Íntegra, vigência independente e legislação federal não verificadas.
+- Pesquisa hepática integrada `00d68eac-619a-440b-9a80-958b7c66ebf8`: 5 artigos Europe PMC, 5 publicações SBH e 7 trechos. CBR falhou com HTTPStatusError; cobertura registrou a falha sem apagar os resultados disponíveis. Em teste isolado anterior, CBR retornou 2 documentos legíveis e 1 falha de documento. Disponibilidade externa não é garantida.
+- Navegador confirmou a síntese normativa, consulta realizada, lacuna de legislação federal e caminho até a fonte original. Nenhuma chamada paga ou LLM foi utilizada.
+- BVS/LILACS, SciELO, legislação federal e outras sociedades não estão integradas. Não existe motor geral de descoberta web neste incremento.
+- Prévia em `http://127.0.0.1:8788/`, com cópia do histórico em `data/preview-0.2/xpesquisa.db`. A instância anterior em 8787 foi preservada após bloqueio automático da tentativa de reinício. Os dois históricos não são sincronizados.
+
+As seções seguintes registram a validação histórica do primeiro marco 0.1.
 
 ## Prova real
 

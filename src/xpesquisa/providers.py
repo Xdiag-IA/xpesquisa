@@ -54,9 +54,14 @@ class OllamaProvider:
             "Não dê recomendações clínicas. Preserve ressalvas e discordâncias. Cada afirmação precisa de evidence_ids "
             "existentes; não invente bibliografia, DOI, PMID, links ou citações numeradas no texto. "
             "Não infira ausência de efeito da ausência de estudos. Retorne somente JSON conforme o schema."
+            " Separe artigo, notícia institucional e ementa normativa. Uma ementa não demonstra o conteúdo integral de uma norma. "
+            "Não conclua obrigações jurídicas nem vigência independente. Preserve situação revogada ou suspensa quando informada."
         )
         prompt = json.dumps({"question": run.request.question, "evidence": [
-            {"id": e.id, "excerpt": e.supporting_excerpt} for e in run.evidence
+            {"id": e.id, "excerpt": e.supporting_excerpt,
+             "source": next({"title": s.title, "document_type": s.document_type,
+                             "content_kind": s.content_kind, "regulatory_status": s.regulatory_status}
+                            for s in run.sources if s.id == e.source_id)} for e in run.evidence
         ]}, ensure_ascii=False)
         options = {"temperature": 0, "seed": 42, "num_predict": 1800}
         response = await self.client.post(self.base_url + "/api/generate", json={
