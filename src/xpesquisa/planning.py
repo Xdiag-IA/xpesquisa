@@ -11,6 +11,9 @@ def normalized(text: str) -> str:
 
 def brazil_terms(question: str) -> str:
     text = normalized(question).replace("artifical", "artificial")
+    anatomy = ultrasound_anatomy(text)
+    if anatomy:
+        return "ultrassonografia " + anatomy[0]
     topics = [(r"inteligencia artificial|\bia\b", "inteligência artificial"),
               (r"elastograf", "elastografia"), (r"esteatos|masld|gordura no figado", "esteatose"),
               (r"telemedicina", "telemedicina"), (r"publicidade", "publicidade médica"),
@@ -18,9 +21,23 @@ def brazil_terms(question: str) -> str:
     for pattern, terms in topics:
         if re.search(pattern, text):
             return terms
-    stop = set("a as o os um uma uns umas e de da das do dos em no na nos nas por para sobre com como qual quais que se ao aos pelo pela medico medicos medicina brasil brasileira brasileiro uso lei leis define evidencia atual sociedade sociedades pesquisa pesquisar conselho federal regional".split())
+    stop = set("a as o os um uma uns umas e de da das do dos em no na nos nas por para sobre com como qual quais que se ao aos pelo pela medico medicos medicina brasil brasileira brasileiro uso lei leis define evidencia atual sociedade sociedades pesquisa pesquisar conselho federal regional quero investigar saber conhecer medidas chave principais".split())
     words = [w for w in re.findall(r"[\w-]+", question.lower()) if normalized(w) not in stop and len(w) > 2]
     return " ".join(words[:7]) or question.strip()
+
+
+def ultrasound_anatomy(text: str):
+    """Small explicit vocabulary, not an inferred clinical diagnosis."""
+    if not re.search(r"ultrassom|ultrasson|ultrason|ultrasound|sonograf|ecograf", text):
+        return None
+    for pattern, pt, en in [(r"punho|carpo|wrist|carpal", "punho", "wrist OR carpal"),
+                            (r"ombro|shoulder", "ombro", "shoulder"),
+                            (r"joelho|knee", "joelho", "knee"),
+                            (r"tornozelo|ankle", "tornozelo", "ankle"),
+                            (r"cotovelo|elbow", "cotovelo", "elbow")]:
+        if re.search(pattern, text):
+            return pt, en
+    return None
 
 
 def plan_research(request: ResearchRequest) -> Plan:
@@ -45,13 +62,16 @@ def plan_research(request: ResearchRequest) -> Plan:
         plan.intent = intent
         plan.searches = [SearchTask(connector="europe_pmc", label="Europe PMC", query=plan.query,
                                    reason="Literatura científica internacional; registros MED no exemplo hepático.")]
-        if intent == "brazil":
+        if request.scope != "literature":
             plan.searches.extend([
+                SearchTask(connector="scielo_crossref", label="Crossref — depositante SciELO Brasil", query=local_query,
+                           reason="Descoberta de metadados depositados por FapUNIFESP/SciELO; não é consulta direta nem cobertura integral do SciELO.",
+                           manual_url="https://search.scielo.org/?" + urlencode({"q": local_query, "lang": "pt"})),
                 SearchTask(connector="bvs_pending", label="BVS / LILACS", query=local_query,
-                           reason="Literatura latino-americana; conector pendente, acesso automatizado bloqueado no diagnóstico inicial.",
+                           reason="API oficial exige chave de acesso; integração pendente. Portal restringe acesso automatizado neste ambiente.",
                            manual_url="https://search.bvsalud.org/portal/?" + urlencode({"q": local_query})),
                 SearchTask(connector="scielo_pending", label="SciELO", query=local_query,
-                           reason="Coleções científicas brasileiras; integração automática ainda não implementada.",
+                           reason="Busca direta não integrada: portal restringe acesso automatizado. A consulta Crossref acima é uma fonte distinta e parcial.",
                            manual_url="https://search.scielo.org/?" + urlencode({"q": local_query, "lang": "pt"}))])
     # Explicit international-only mode is available; auto still includes relevant Brazilian societies.
     if request.scope != "literature":
@@ -59,9 +79,14 @@ def plan_research(request: ResearchRequest) -> Plan:
             plan.searches.append(SearchTask(connector="sbh", label="Sociedade Brasileira de Hepatologia", query=local_query,
                                              reason="Tema hepático: consultar publicações institucionais da especialidade."))
         if re.search(r"radiolog|elastograf|ultrassom|ultrasson|diagnostico por imagem", text):
-            plan.searches.append(SearchTask(connector="cbr", label="Colégio Brasileiro de Radiologia", query=local_query,
+            society_query = ultrasound_anatomy(text)[0] if ultrasound_anatomy(text) and not request.query else local_query
+            plan.searches.append(SearchTask(connector="cbr", label="Colégio Brasileiro de Radiologia", query=society_query,
                                              reason="Tema de diagnóstico por imagem: consultar a sociedade da especialidade."))
-    plan.limitations.append("Direcionamento por regras e vocabulário inicial, não compreensão universal. Catálogo de sociedades ainda limitado a SBH e CBR.")
+        if re.search(r"ultrassom|ultrasson|ultrason|ultrasound|sonograf|ecograf", text):
+            society_query = ultrasound_anatomy(text)[0] if ultrasound_anatomy(text) and not request.query else local_query
+            plan.searches.append(SearchTask(connector="sbus", label="Sociedade Brasileira de Ultrassonografia", query=society_query,
+                                           reason="Ultrassonografia: publicações públicas da SBUS; cursos e notícias não equivalem a recomendações clínicas."))
+    plan.limitations.append("Direcionamento por regras e vocabulário inicial, não compreensão universal. Catálogo de sociedades: SBH, CBR e SBUS.")
     return plan
 
 
@@ -69,6 +94,14 @@ def literature_plan(request: ResearchRequest, text: str) -> Plan:
     if request.query:
         return Plan(interpretation=request.question, query=request.query, strategy="Query fornecida pelo usuário",
                     limitations=["Estratégia não validada por bibliotecário ou especialista."])
+    anatomy = ultrasound_anatomy(text)
+    if anatomy:
+        query = f'(ultrasound OR ultrasonography OR sonography) AND ({anatomy[1]})'
+        if re.search(r"medid|mensura|diametro|area|referencia|measurement", text):
+            query += ' AND (measurement OR measurements OR "cross-sectional area" OR "reference values")'
+        return Plan(interpretation=request.question, query=query + " AND SRC:MED",
+                    strategy="Vocabulário explícito de modalidade, anatomia e medidas; remove linguagem conversacional. Não restringe automaticamente a uma doença.",
+                    limitations=["Busca exploratória de medidas; valores de normalidade e aplicabilidade precisam de revisão humana."])
     if "elastograf" in text and any(w in text for w in ("hepat", "figado", "fibros")):
         return Plan(
             interpretation="Mapear literatura sobre elastografia hepática e avaliação de fibrose, sem restringir etiologia.",

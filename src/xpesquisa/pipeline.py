@@ -3,8 +3,9 @@ import re
 
 from .brazil import AccessBlocked, BrazilSearch
 from .connectors import ConnectorError, EuropePMC
+from .crossref import SciELODeposits, lexical_match
 from .models import Coverage, Event, Evidence, Run, validate_links
-from .planning import normalized, plan_research
+from .planning import brazil_terms, normalized, plan_research, ultrasound_anatomy
 from .providers import ExtractiveProvider, SynthesisProvider
 from .storage import Store
 
@@ -13,11 +14,22 @@ logger = logging.getLogger(__name__)
 
 def extract(run: Run) -> list[Evidence]:
     result = []
+    seen_dois = set()
     for source in run.sources:
         if not source.abstract or source.identifier_status == "mismatch":
             continue
+        if source.doi and source.doi.lower() in seen_dois:
+            source.selection_note = "Mesmo DOI já representado em outro trecho nesta pesquisa; mantido como fonte adicional sem repetir a afirmação."
+            continue
         first_match = None
         if source.document_type != "scientific_article" and run.plan:
+            if source.document_type == "institutional" and ultrasound_anatomy(normalized(run.request.question)):
+                # A short institutional query improves recall, but "de próprio punho"
+                # in application instructions is not anatomical wrist content.
+                topical_text = normalized(source.title + " " + source.abstract).replace("proprio punho", "")
+                if not lexical_match(brazil_terms(run.request.question), topical_text):
+                    source.selection_note = "Candidato fora da síntese: modalidade e anatomia não aparecem juntas no conteúdo. Correspondência de busca não comprova pertinência clínica."
+                    continue
             task = next((t for t in run.plan.searches if t.connector == source.collection.lower()), None)
             terms = [term for term in re.findall(r"\w+", normalized(task.query if task else ""))
                      if len(term) > 2 and term not in {"and", "para", "sobre", "com", "dos", "das"}]
@@ -41,6 +53,8 @@ def extract(run: Run) -> list[Evidence]:
                 end = boundary + 1
         text = source.abstract[start:end]
         if text:
+            if source.doi:
+                seen_dois.add(source.doi.lower())
             limitation = {"abstract": "Somente abstract; avaliação metodológica pendente.",
                           "ementa": "Somente ementa oficial; íntegra e vigência independente não verificadas.",
                           "institutional_text": "Publicação institucional; não classificada automaticamente como diretriz ou estudo."}
@@ -74,12 +88,17 @@ async def execute(run: Run, store: Store, connector: EuropePMC, provider: Synthe
             try:
                 if coverage.connector == "europe_pmc":
                     found, detail = await connector.search(coverage.query, run.request.limit)
+                elif coverage.connector == "scielo_crossref":
+                    found, detail = await SciELODeposits(connector.client).search(coverage.query, run.request.limit)
                 else:
                     found, detail = await national.search(coverage.connector, coverage.query, run.request.limit, run.request.uf)
                 run.sources.extend(s for s in found if s.id not in {r.id for r in run.sources})
                 coverage.count = len(found)
                 coverage.status = "success" if found else "empty"
                 coverage.message = "Consulta concluída; cobertura limitada à primeira página."
+                if coverage.connector == "scielo_crossref":
+                    coverage.message = (f"{detail['candidate_count']} candidatos examinados; {len(found)} com correspondência lexical. "
+                                        "Metadados via Crossref, sem consulta direta ao SciELO; resumos podem estar ausentes.")
                 if detail.get("failed_documents") or detail.get("failed_queries"):
                     coverage.message += " Alguns documentos não puderam ser lidos; veja a rastreabilidade."
                 record("search_completed", source=coverage.label, **detail)
@@ -102,7 +121,7 @@ async def execute(run: Run, store: Store, connector: EuropePMC, provider: Synthe
                selection_notes={s.id: s.selection_note for s in run.sources if s.selection_note})
         run.limitations = run.plan.limitations + [
             "Busca exploratória limitada por fonte; não é revisão sistemática nem levantamento normativo completo.",
-            "Somente referências científicas passam pela reconferência na mesma base; documentos institucionais não têm verificação independente.",
+            "Somente registros Europe PMC passam pela reconferência na mesma base; Crossref e documentos institucionais não têm verificação independente.",
             "Trecho literal conferido não significa suporte semântico ou validade clínica verificados.",
             "Risco de viés, tamanho amostral, GRADE, retratações e aplicabilidade ao Brasil não foram avaliados.",
             "Não houve busca ativa de evidência contrária; discordâncias ainda não avaliadas.",

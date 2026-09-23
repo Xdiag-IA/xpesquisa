@@ -1,5 +1,15 @@
 # Validação do XPesquisa
 
+## Incremento 0.3 — pergunta de punho e descoberta brasileira
+
+Validação em 23/09/2026: **62 testes passaram**, com o aviso conhecido do TestClient. JavaScript verificado sintaticamente; pacote 0.3 instalado em modo editável. Testes adicionais cobrem query por conceitos, anatomias distintas, escopo manual, respostas Crossref inválidas versus vazias, origem do depositante, sinônimos, ausência de resumo, redirects, DOI duplicado e cartas “de próprio punho” fora da síntese. Europe PMC tem repetição limitada para respostas incompletas, coberta por teste.
+
+Pergunta original: “Quero investigar medidas chave em ultrassom de punho”. Registro anterior `0efbda84-f935-4a10-9580-84480c0067bf` retornava zero fontes com pergunta literal. Execução final pela interface `2da9401c-878d-48d8-8c79-8be06c3ef835`: **12 fontes, 9 trechos**, sendo 8 artigos Europe PMC, 1 registro do depositante SciELO via Crossref, 1 publicação CBR e 2 SBUS. A síntese utilizou apenas os 9 registros científicos; páginas institucionais sem texto ou sem os conceitos ficaram fora. CBR teve falha parcial de leitura, preservada no painel. BVS e SciELO direto permaneceram não integrados.
+
+Execuções intermediárias preservadas mostram instabilidade externa: uma recuperou 13 candidatos antes do ajuste de pertinência; outra teve falhas Europe PMC/CBR e preservou 3 registros das demais fontes. Não se apagou ou reescreveu histórico para aparentar sucesso. A versão final foi confirmada no navegador, na mesma porta 8788 e no banco já utilizado. Interface exibiu os 12 registros e as lacunas. Não houve chamada paga, LLM, leitura integral de normas ou interpretação clínica validada.
+
+Consulte [diagnóstico de acesso e requisitos pendentes](research/expansion-0.3.md). Esta entrega amplia a descoberta, mas não conclui BVS/LILACS, SciELO direto ou legislação federal.
+
 Data: 2026-09-23. Ambiente: Windows, Python 3.10.11 e Node 22.19.0 apenas para checagem de sintaxe JavaScript. Versões Python resolvidas em requirements.lock. Testes usam dados sintéticos e não acionam a rede.
 
 ## Incremento 0.2 — fontes brasileiras

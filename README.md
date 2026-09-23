@@ -10,13 +10,13 @@ Criada pela **Xdiag Tecnologias**, no Brasil, para apoiar pesquisa, educação e
 
 | Situação | Informação |
 |---|---|
-| Versão | **0.2.0 — protótipo funcional para uso local** |
+| Versão | **0.3.0 — protótipo funcional para uso local** |
 | Repositório | **Público**, aberto para consulta e propostas de contribuição |
 | Licença do código | Apache-2.0 |
 | Interface | Navegador, em português do Brasil |
 | Modo padrão | Síntese extrativa, sem exigir modelo de IA ou API paga |
-| Fontes integradas | Europe PMC, base de normas CFM/CRMs, sites SBH e CBR |
-| Validação registrada | 49 testes passaram; consultas reais documentadas em 23/09/2026 |
+| Fontes integradas | Europe PMC, base de normas CFM/CRMs, sites SBH, CBR e SBUS; metadados SciELO via Crossref |
+| Validação registrada | 62 testes passaram; consultas reais documentadas em 23/09/2026 |
 
 **Primeira visita:** [proposta](#por-que-o-projeto-existe) · [funcionalidades](#o-que-já-funciona) · [fontes](#fontes-e-cobertura-brasileira) · [limitações](#o-que-ainda-não-faz) · [instalação](#instalação-e-primeiro-acesso) · [colaboração](#como-colaborar).
 
@@ -55,7 +55,7 @@ O projeto é open source, com repositório público e código sob Apache-2.0. Qu
 | Escopo e estado | Permite escolher escopo e uma UF para consultas normativas |
 | Pesquisa científica | Consulta Europe PMC; o exemplo hepático utiliza o recorte MED |
 | Pesquisa normativa | Consulta resoluções e pareceres na base pública CFM/CRMs |
-| Sociedades médicas | Consulta publicações públicas da SBH e do CBR nos assuntos contemplados |
+| Sociedades médicas | Consulta publicações públicas da SBH, do CBR e da SBUS nos assuntos contemplados |
 | Cobertura transparente | Exibe consultas, resultados vazios, falhas, bloqueios e integrações pendentes |
 | Síntese extrativa | Seleciona trechos literais e os apresenta vinculados às fontes |
 | Rastreabilidade | Relaciona afirmação, evidência e fonte; registra consultas, datas, IDs e hashes |
@@ -73,7 +73,9 @@ flowchart TD
     A[Pergunta e escopo] --> B[Plano de busca por regras]
     B --> C[Literatura: Europe PMC]
     B --> D[Normas: CFM e CRMs]
-    B --> E[Sociedades: SBH e CBR]
+    B --> E[Sociedades: SBH, CBR e SBUS]
+    B --> K[Metadados SciELO via Crossref]
+    K --> F
     C --> F[Fontes e cobertura da consulta]
     D --> F
     E --> F
@@ -91,6 +93,12 @@ Nem toda pergunta consulta todas as fontes. O planejamento usa regras e vocabul�
 
 No modo automático, a pergunta pode consultar Europe PMC e publicações da SBH/CBR. Resultados científicos e institucionais ficam identificados separadamente. Anúncios de cursos ou notícias sobre diretrizes não se transformam automaticamente em estudos ou diretrizes.
 
+### Exemplo de medidas em ultrassom
+
+**“Quero investigar medidas chave em ultrassom de punho”**
+
+A versão 0.3 separa modalidade, anatomia e medidas, usando sinônimos em inglês na busca científica e termos curtos nos sites das sociedades. Também contempla ombro, joelho, tornozelo e cotovelo. Não infere uma doença nem fornece valores normais validados. O modo automático inclui a descoberta de metadados SciELO via Crossref e mostra as lacunas brasileiras, mesmo sem a palavra Brasil na pergunta.
+
 ### Exemplo normativo
 
 **“Como as normas brasileiras tratam o uso de inteligência artificial na medicina?”**
@@ -107,14 +115,16 @@ Isso ajuda a localizar documentos para leitura. **Não constitui resposta juríd
 | CFM/CRMs | Integrada | Ementa, número, ano, jurisdição e situação declarada de resoluções/pareceres; não lê a íntegra |
 | Sociedade Brasileira de Hepatologia — SBH | Integrada | Posts e páginas públicos; podem incluir notícias, eventos e anúncios |
 | Colégio Brasileiro de Radiologia — CBR | Integrada | Posts e páginas públicos; documentos e consultas podem apresentar falhas externas |
-| BVS/LILACS | Pendente | Lacuna explícita e link manual; não apresentada como já pesquisada |
-| SciELO | Pendente | Lacuna explícita e link manual |
+| SBUS — Sociedade Brasileira de Ultrassonografia | Integrada | Publicações públicas sobre ultrassonografia; páginas sem texto permanecem apenas como referências |
+| Crossref — depositante FapUNIFESP/SciELO | Integrada, indireta | Examina até 20 candidatos do depositante 530; seleção lexical nos metadados. Não equivale a busca direta SciELO nem cobre toda a coleção |
+| BVS/LILACS | Pendente | API oficial exige chave; portal restringe acesso automatizado neste ambiente. Link manual disponível |
+| SciELO — busca direta | Pendente | Portal bloqueou acesso automatizado neste ambiente; a consulta Crossref é distinta e parcial |
 | Legislação federal / Diário Oficial | Pendente | Complementação manual; normas profissionais não equivalem a cobertura de leis federais |
 | Outras sociedades médicas | Pendente | Exigem ampliação do catálogo, do planejamento e dos conectores |
 
 A consulta é exploratória, limitada à primeira página. O limite configurável chega a 20 documentos científicos/normativos por consulta; sociedades têm limite de até 5 publicações por fonte. CFM nacional e estadual são consultas separadas. Esses limites não permitem declarar uma busca exaustiva.
 
-**E se o site não tiver uma caixa de busca?** Pode existir API pública ou outro acesso permitido. A implementação atual usa a busca pública CFM e APIs WordPress das duas sociedades. Ainda não existe motor geral que descubra e pesquise qualquer site. Não há contratação de busca paga nem contorno de bloqueios, login ou paywalls.
+**E se o site não tiver uma caixa de busca?** Pode existir API pública ou outro acesso permitido. A implementação atual usa a busca pública CFM e APIs WordPress das três sociedades. Ainda não existe motor geral que descubra e pesquise qualquer site. Não há contratação de busca paga nem contorno de bloqueios, login ou paywalls.
 
 Origem institucional brasileira não comprova população brasileira em um estudo. Ausência de resultados não comprova ausência de evidência ou norma. Consulte [fontes brasileiras: acesso e limites](docs/research/brazil-sources.md).
 
@@ -126,9 +136,9 @@ Origem institucional brasileira não comprova população brasileira em um estud
 | **Evidência — Evidence** | Trecho da fonte, com localização no texto normalizado e vínculo ao documento |
 | **Afirmação — Claim** | Achado apresentado ao leitor, ligado aos trechos utilizados |
 
-A conferência verifica referências internas, correspondência literal dos trechos e integridade dos registros. Referências científicas também podem ter ID, título e DOI reconferidos **na mesma base**. Hashes identificam o conteúdo registrado; não atestam sua veracidade.
+A conferência verifica referências internas, correspondência literal dos trechos e integridade dos registros. Referências do Europe PMC também podem ter ID, título e DOI reconferidos **na mesma base**. Hashes identificam o conteúdo registrado; não atestam sua veracidade.
 
-**Trecho conferido não significa interpretação validada.** Essas verificações não demonstram que uma inferência esteja correta, que um estudo tenha baixo risco de viés ou que seus resultados se apliquem a um paciente. DOI não é resolvido independentemente. Documentos institucionais não recebem validação independente de conteúdo ou vigência.
+**Trecho conferido não significa interpretação validada.** Essas verificações não demonstram que uma inferência esteja correta, que um estudo tenha baixo risco de viés ou que seus resultados se apliquem a um paciente. DOI não é resolvido independentemente. Documentos institucionais e registros Crossref não recebem validação independente de conteúdo. DOI repetido entre fontes não gera afirmações extrativas duplicadas.
 
 ## O que ainda não faz
 
@@ -229,6 +239,7 @@ src/xpesquisa/
   planning.py      Planejamento e escolha das fontes
   connectors.py    Conector científico e normalização de texto
   brazil.py        Acesso a normas e sociedades brasileiras
+  crossref.py      Descoberta indireta de depósitos SciELO no Crossref
   pipeline.py      Execução, seleção, conferências e síntese
   providers.py     Modo extrativo e adapter Ollama
   web/             Interface em português
@@ -248,7 +259,7 @@ A documentação da API está em `/docs` no aplicativo em execução.
 
 ## Validação e qualidade
 
-Na validação registrada da versão 0.2, **49 testes passaram**. A suíte usa dados sintéticos e mocks, sem chamadas externas ou pagas. Inclui vínculos inválidos, trechos adulterados, falhas versus vazio, bloqueios, redirects, classificação documental e compatibilidade histórica.
+Na validação registrada da versão 0.3, **62 testes passaram**. A suíte usa dados sintéticos e mocks, sem chamadas externas ou pagas. Inclui vínculos inválidos, trechos adulterados, falhas versus vazio, bloqueios, redirects, classificação documental e compatibilidade histórica.
 
 Consultas reais foram feitas separadamente: a pesquisa normativa localizou documentos CFM/CRMs; a hepática recuperou artigos e publicações SBH. O CBR respondeu em teste isolado, mas apresentou falha HTTP em uma execução integrada, registrada sem apagar outros resultados.
 
@@ -262,7 +273,7 @@ No macOS/Linux, use `.venv/bin/python -m pytest`. As versões verificadas estão
 
 ## Próximas etapas
 
-1. **Ampliar o Brasil:** BVS/LILACS, SciELO, legislação federal e outras sociedades, com revisão de acesso e direitos.
+1. **Ampliar o Brasil:** viabilizar acesso oficial BVS/LILACS, busca direta SciELO e legislação federal; ampliar sociedades além de SBH/CBR/SBUS. A descoberta indireta via Crossref já funciona, mas não substitui essas integrações.
 2. **Melhorar a busca:** vocabulário DeCS/MeSH, planejamento editável, paginação e critérios de seleção.
 3. **Estruturar evidências:** população, amostra e desfechos, com trecho de suporte para cada campo.
 4. **Aprofundar a verificação:** resolução independente de IDs e avaliação semântica com especialistas.

@@ -20,3 +20,7 @@ Inventário transitivo conferido após resolução: MIT (annotated-doc/types, an
 Automação CI referencia actions/checkout e actions/setup-python (MIT), sem copiar seu código. Origem/licenças: https://github.com/actions/checkout/blob/main/LICENSE e https://github.com/actions/setup-python/blob/main/LICENSE. O workflow está preparado localmente; não foi executado no GitHub.
 
 Incremento 0.2: conectores originais para busca pública CFM/CRMs e APIs públicas de SBH/CBR. Não incorporam código WordPress nem SearXNG e não adicionam dependências. Políticas e limitações de acesso documentadas em docs/research/brazil-sources.md. Textos recuperados mantêm os direitos dos respectivos titulares e não acompanham a distribuição do código.
+# Incremento 0.3
+
+Conector original para a API pública Crossref e extensão do conector WordPress para SBUS. Nenhuma nova biblioteca adicionada. Metadados Crossref e eventuais abstracts têm condições distintas; abstracts e publicações institucionais podem manter direitos próprios. Documentação e fontes consultadas em `docs/research/expansion-0.3.md`.
+

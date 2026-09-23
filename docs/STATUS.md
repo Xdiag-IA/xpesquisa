@@ -1,5 +1,14 @@
 # Estado do XPesquisa
 
+## Incremento atual 0.3 — busca por conceitos e ampliação brasileira
+- Perguntas de ultrassonografia musculoesquelética usam modalidade, anatomia e termos de medidas, sem linguagem conversacional. Query manual continua disponível.
+- SBUS adicionada. Metadados do depositante FapUNIFESP/SciELO consultados pelo Crossref, com rótulo explícito de acesso indireto e parcial.
+- Seleção lexical evita que cartas “de próprio punho” entrem na síntese clínica. DOI repetido não duplica trechos; documento sem texto não gera afirmação.
+- Europe PMC pode repetir até três vezes respostas incompletas; falha persistente continua visível, sem ser convertida em resultado vazio.
+- 62 testes passaram; detalhes e restrições em docs/research/expansion-0.3.md e docs/validation.md.
+- Versão atual em 127.0.0.1:8788, mantendo o banco data/preview-0.2/xpesquisa.db e o histórico existente. O nome da pasta foi preservado; não indica a versão do código. Porta 8787 continua separada.
+- BVS/LILACS, consulta direta SciELO e legislação federal ainda não integradas. Não há declaração de conclusão de toda a etapa Brasil.
+
 ## Discovery — concluído (2026-09-23)
 - Diretório inicialmente vazio; nenhum arquivo do usuário removido.
 - Feynman, PaperQA e Open Deep Research estudados; licenças verificadas.

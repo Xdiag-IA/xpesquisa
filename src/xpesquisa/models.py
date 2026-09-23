@@ -134,8 +134,8 @@ class Event(Record):
 
 
 class Run(Record):
-    schema_version: str = "0.2.0"
-    pipeline_version: str = "0.2.0"
+    schema_version: str = "0.3.0"
+    pipeline_version: str = "0.3.0"
     id: str = Field(default_factory=uid)
     request: ResearchRequest
     created_at: datetime = Field(default_factory=now)

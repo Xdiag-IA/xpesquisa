@@ -16,6 +16,7 @@ SITES = {
     "cfm": ("https://portal.cfm.org.br", "CFM e CRMs"),
     "sbh": ("https://sbhepatologia.org.br", "Sociedade Brasileira de Hepatologia"),
     "cbr": ("https://cbr.org.br", "Colégio Brasileiro de Radiologia"),
+    "sbus": ("https://sbus.org.br", "Sociedade Brasileira de Ultrassonografia"),
 }
 
 
@@ -52,7 +53,7 @@ class OfficialAccess:
             if not same_origin(url, base):
                 raise AccessBlocked("Redirecionamento ou endereço fora do domínio oficial permitido.")
             async with self.client.stream("GET", url, params=params, timeout=20,
-                                          headers={"User-Agent": "XPesquisa/0.2 (+local research)"},
+                                          headers={"User-Agent": "XPesquisa/0.3 (+local research)"},
                                           follow_redirects=False) as response:
                 if response.status_code in {301, 302, 303, 307, 308}:
                     url = urljoin(str(response.url), response.headers.get("location", ""))

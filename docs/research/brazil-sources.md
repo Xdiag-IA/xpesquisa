@@ -1,5 +1,7 @@
 # Fontes brasileiras — acesso e limites
 
+Este documento registra o incremento 0.2. Para a atualização 0.3 (SBUS, metadados SciELO via Crossref e diagnóstico de acesso BVS/legislação), consulte [ampliação 0.3](expansion-0.3.md). Busca direta SciELO permanece pendente.
+
 Verificado em 2026-09-23. Não há licença presumida para republicar conteúdo; acesso público/robots não equivale a concessão de direitos. O código dos conectores é original, usa HTTPX existente e biblioteca padrão Python. Nenhuma biblioteca nova ou prompt de terceiros incorporado.
 
 | Fonte | Acesso observado | Implementação | Limites |

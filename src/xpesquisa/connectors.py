@@ -62,6 +62,10 @@ class EuropePMC:
                 response.raise_for_status()
                 payload = response.json()
                 if not isinstance(payload.get("resultList", {}).get("result"), list) or "hitCount" not in payload:
+                    if attempt < 2:
+                        import asyncio
+                        await asyncio.sleep(1 + attempt)
+                        continue
                     raise ConnectorError("Resposta incompleta do Europe PMC; não equivale a busca sem resultados.")
                 digest = hashlib.sha256(response.content).hexdigest()
                 return payload, digest, {"endpoint": ENDPOINT, "params": params, "response_sha256": digest,

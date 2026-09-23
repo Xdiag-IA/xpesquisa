@@ -14,7 +14,7 @@
   <button id="new" class="new-button">＋ Nova pesquisa</button>
   <div class="section-label">CADERNO DE PESQUISAS</div>
   <nav id="history" aria-label="Histórico"><p class="muted">Nenhuma pesquisa ainda.</p></nav>
-  <div class="sidebar-bottom"><span class="local-dot"></span> Ambiente local <span id="version">0.2.0</span><p>Ciência aberta. Raciocínio rastreável.</p></div>
+  <div class="sidebar-bottom"><span class="local-dot"></span> Ambiente local <span id="version">0.3.0</span><p>Ciência aberta. Raciocínio rastreável.</p></div>
 </aside>
 <div class="workspace">
   <header><span>Biblioteca de evidências <span class="slash">/</span> Pesquisa exploratória</span><span class="tag">PRÉVIA EXPERIMENTAL</span></header>
@@ -29,7 +29,7 @@
       <textarea id="question" rows="3" minlength="8" maxlength="2000" required placeholder="Formule uma pergunta de pesquisa em saúde..."></textarea>
       <div class="routing-controls"><label for="scope">Onde pesquisar</label><select id="scope"><option value="auto">Automático — conforme a pergunta</option><option value="brazil">Brasil + literatura científica</option><option value="regulation">Normas profissionais brasileiras</option><option value="literature">Somente literatura científica</option></select><label for="uf">CRM / estado</label><select id="uf"><option value="">Todos / sem recorte estadual</option></select></div>
       <div class="search-bottom"><span class="source-pill">Fontes por assunto <span>· ciência, normas e sociedades</span></span><button type="submit" id="submit">Pesquisar fontes <span>↗</span></button></div>
-      <details class="advanced"><summary>Estratégia de busca e limite</summary><label for="query">Termos opcionais — substituem a query automática em cada fonte</label><input id="query" maxlength="1000" placeholder='Ex.: inteligência artificial'><label for="limit">Limite de documentos por fonte</label><select id="limit"><option>5</option><option selected>8</option><option>12</option><option>20</option></select><p>Busca exploratória. Sites de sociedades: até 5 publicações por instituição. Neste catálogo: CFM/CRMs, SBH e CBR. BVS/LILACS, SciELO e legislação federal aparecem como lacunas, não como fontes já consultadas.</p></details>
+      <details class="advanced"><summary>Estratégia de busca e limite</summary><label for="query">Termos opcionais — substituem a query automática em cada fonte</label><input id="query" maxlength="1000" placeholder='Ex.: inteligência artificial'><label for="limit">Limite de documentos por fonte</label><select id="limit"><option>5</option><option selected>8</option><option>12</option><option>20</option></select><p>Busca exploratória. Sites de sociedades: até 5 publicações por instituição. Neste catálogo: CFM/CRMs, SBH, CBR e SBUS. Metadados do depositante SciELO Brasil são pesquisados via Crossref, com cobertura parcial. BVS/LILACS, busca direta SciELO e legislação federal ainda exigem complemento manual.</p></details>
     </form>
     <div id="example-row"><span>COMECE POR UMA PERGUNTA</span><button id="example">Elastografia hepática e fibrose <span>↗</span></button><button id="example-regulation" class="outline">IA e normas médicas no Brasil ↗</button></div>
     <p class="research-note">Para pesquisa, educação e atualização científica. Não substitui o julgamento clínico. Não insira dados identificáveis de pacientes.</p>

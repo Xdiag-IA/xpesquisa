@@ -37,7 +37,7 @@ def test_regulatory_question_does_not_go_to_pubmed():
 
 def test_specialty_and_brazil_routing():
     plan = plan_research(ResearchRequest(question='Qual evidência de elastografia hepática no Brasil?'))
-    assert {s.connector for s in plan.searches} == {'europe_pmc','cbr','sbh','bvs_pending','scielo_pending'}
+    assert {s.connector for s in plan.searches} == {'europe_pmc','cbr','sbh','bvs_pending','scielo_pending','scielo_crossref'}
     plan = plan_research(ResearchRequest(question='Qual prevalência de esteatose no Brasil?'))
     assert 'prevalence' in plan.query and 'Brazil' in plan.query
     assert 'sbh' in [s.connector for s in plan.searches]

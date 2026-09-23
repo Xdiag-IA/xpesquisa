@@ -27,7 +27,7 @@ def create_app(data_dir: Path | None = None, transport=None, provider_override=N
         app.state.store.recover()
         app.state.tasks = set()
         async with httpx.AsyncClient(timeout=30, transport=transport, follow_redirects=False,
-                                     headers={"User-Agent": "XPesquisa/0.2 local scientific research"}) as client:
+                                     headers={"User-Agent": "XPesquisa/0.3 local scientific research"}) as client:
             app.state.connector = EuropePMC(client)
             provider_name = os.getenv("XPESQUISA_PROVIDER", "extractive")
             if provider_override is not None:
