@@ -12,6 +12,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from . import __version__
 from .connectors import EuropePMC
+from .identity import IndependentIdentity
 from .models import ResearchRequest, Run
 from .pipeline import execute
 from .providers import ExtractiveProvider, OllamaProvider
@@ -29,6 +30,7 @@ def create_app(data_dir: Path | None = None, transport=None, provider_override=N
         async with httpx.AsyncClient(timeout=30, transport=transport, follow_redirects=False,
                                      headers={"User-Agent": "XPesquisa/0.3 local scientific research"}) as client:
             app.state.connector = EuropePMC(client)
+            app.state.identity = IndependentIdentity(client)
             provider_name = os.getenv("XPESQUISA_PROVIDER", "extractive")
             if provider_override is not None:
                 app.state.provider = provider_override
@@ -90,7 +92,8 @@ def create_app(data_dir: Path | None = None, transport=None, provider_override=N
             raise HTTPException(429, "Há duas pesquisas em execução. Aguarde uma delas terminar.")
         run = Run(request=body)
         app.state.store.save(run)
-        task = asyncio.create_task(execute(run, app.state.store, app.state.connector, app.state.provider))
+        task = asyncio.create_task(execute(run, app.state.store, app.state.connector, app.state.provider,
+                                            app.state.identity))
         app.state.tasks.add(task)
         task.add_done_callback(app.state.tasks.discard)
         return {"id": run.id, "status": "queued"}

@@ -23,3 +23,12 @@ Incremento 0.2: conectores originais para busca pública CFM/CRMs e APIs públic
 # Incremento 0.3
 
 Conector original para a API pública Crossref e extensão do conector WordPress para SBUS. Nenhuma nova biblioteca adicionada. Metadados Crossref e eventuais abstracts têm condições distintas; abstracts e publicações institucionais podem manter direitos próprios. Documentação e fontes consultadas em `docs/research/expansion-0.3.md`.
+
+# Incremento — resolução independente de DOI/PMID
+
+Módulo original `identity.py`, sem novas dependências de terceiros. Consulta metadados públicos de duas fontes, ambas sem chave obrigatória:
+
+- [doi.org](https://www.doi.org/) — negociação de conteúdo CSL-JSON, mantida por Crossref/DataCite. Sem limite numérico publicado para doi.org; adotado espaçamento cortês de 1 req/s por conta própria, seguindo o princípio do "polite pool" documentado pela Crossref (https://api.crossref.org/swagger-ui/index.html#/Works).
+- [NCBI E-utilities](https://www.ncbi.nlm.nih.gov/books/NBK25497/) (`esummary`, PubMed) — limite publicado de 3 requisições/segundo sem chave de API; identificação da ferramenta enviada via parâmetro `tool=xpesquisa` e `User-Agent` descritivo.
+
+Nenhum dado de paciente é enviado; apenas DOI/PMID e título já recuperados de fontes públicas anteriores (Europe PMC). Metadados retornados (título) usados só para comparação, não armazenados além do necessário à checagem.

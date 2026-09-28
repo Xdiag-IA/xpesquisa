@@ -1,6 +1,14 @@
 # Estado do XPesquisa
 
-## Incremento atual 0.3 — busca por conceitos e ampliação brasileira
+## Incremento atual — resolução independente de DOI/PMID
+- `identity.py`: verificação de DOI via doi.org (CSL-JSON) e de PMID via NCBI E-utilities `esummary`, além da reconfirmação já existente na própria Europe PMC. Comparação de título usa forma normalizada (sem acento/pontuação/maiúsculas), para diferença de formatação não virar `mismatch`.
+- Campos novos em `Source`: `independent_doi_status` e `independent_pmid_status`, com padrão `"not_checked"`. Registros antigos persistidos em JSON continuam legíveis sem migração de schema.
+- Identificação da ferramenta e limite de requisições respeitados: `User-Agent` descritivo e 1 req/s para doi.org; parâmetro `tool=xpesquisa` e até 3 req/s para NCBI. Ver ADR 0010 e THIRD_PARTY_NOTICES.md.
+- Falha de rede em qualquer uma das duas fontes marca `unavailable` e não interrompe a pesquisa nem apaga a checagem já feita pela Europe PMC.
+- 73 testes passaram (62 anteriores + 11 novos em `tests/test_identity.py`), sem rede. Detalhes em docs/validation.md.
+- Ainda não cobertos: Crossref (metadados do depositante SciELO) e documentos institucionais não têm resolução independente.
+
+## Incremento 0.3 — busca por conceitos e ampliação brasileira
 - Perguntas de ultrassonografia musculoesquelética usam modalidade, anatomia e termos de medidas, sem linguagem conversacional. Query manual continua disponível.
 - SBUS adicionada. Metadados do depositante FapUNIFESP/SciELO consultados pelo Crossref, com rótulo explícito de acesso indireto e parcial.
 - Seleção lexical evita que cartas “de próprio punho” entrem na síntese clínica. DOI repetido não duplica trechos; documento sem texto não gera afirmação.
@@ -44,7 +52,7 @@
 - Aviso de depreciação do TestClient da versão resolvida de Starlette, documentado na validação.
 
 ## Próximo passo recomendado
-Revisar com profissionais de saúde o conjunto recuperado e definir uma pequena avaliação de extração clínica/entailment. Em seguida, implementar resolução independente DOI/PMID e ampliar conectores brasileiros/documentos normativos integrais com revisão de acesso. Consulte docs/roadmap.md. Este marco não declara concluídas todas as fases do produto.
+Revisar com profissionais de saúde o conjunto recuperado e definir uma pequena avaliação de extração clínica/entailment. Ampliar a resolução independente para registros do Crossref (quando houver DOI) e ampliar conectores brasileiros/documentos normativos integrais com revisão de acesso. Consulte docs/roadmap.md. Este marco não declara concluídas todas as fases do produto.
 
 ## Colaboração privada no GitHub
 - O usuário autorizou criar o repositório privado `Xdiag-IA/xpesquisa` e enviar o código existente.

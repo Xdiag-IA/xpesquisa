@@ -1,5 +1,19 @@
 # Validação do XPesquisa
 
+## Incremento — resolução independente de DOI/PMID
+
+Validação em 28/09/2026: **73 testes passaram** (62 anteriores mais 11 novos em `tests/test_identity.py`), todos sem rede, com o aviso conhecido do TestClient. Cobertura: resolução DOI casando/não casando título, DOI não encontrado (404) tratado como `mismatch`, falha de rede tratada como `unavailable` sem interromper a pesquisa, resolução PMID via `esummary` com verificação do parâmetro `tool`, DOI e PMID checados de forma independente na mesma fonte (um pode `matched` e o outro `mismatch`), fonte sem DOI/PMID marcada `not_checked` sem chamar rede, registro antigo sem os campos novos carregado com o padrão, e normalização de título absorvendo diferenças de acentuação/pontuação/maiúsculas.
+
+Registros antigos (JSON persistido sem os novos campos) continuam válidos: `independent_doi_status`/`independent_pmid_status` assumem o padrão `"not_checked"` ao carregar, sem necessidade de migração de schema — confirmado por `test_old_source_json_without_new_fields_loads_with_default` (novo) e pelo teste pré-existente `test_old_runs_remain_readable`.
+
+Identificação da ferramenta e limite de requisições, conforme políticas publicadas:
+- doi.org: `User-Agent: XPesquisa/0.3 (...)`, espaçamento cortês de 1 req/s (sem limite numérico oficial publicado por doi.org).
+- NCBI E-utilities: parâmetro `tool=xpesquisa`, espaçamento de até 3 req/s (limite documentado sem chave de API).
+
+Limitações: a resolução independente cobre apenas fontes com DOI ou PMID (registros Europe PMC tipicamente MED/PMC). Crossref (depositante SciELO) e documentos institucionais (CFM/CRMs, SBH, CBR, SBUS) continuam sem verificação independente nesta entrega — não têm DOI/PMID estruturado no fluxo atual. Não houve chamada de rede real nos testes; a integração real com doi.org e NCBI não foi exercida neste ambiente (sem acesso à rede externa durante a validação).
+
+Data: 2026-09-28. Ambiente: Linux, Python 3.14.7 (ambiente virtual isolado para instalar dependências; repositório não foi alterado fora da branch de trabalho). Testes usam dados sintéticos e não acionam a rede.
+
 ## Incremento 0.3 — pergunta de punho e descoberta brasileira
 
 Validação em 23/09/2026: **62 testes passaram**, com o aviso conhecido do TestClient. JavaScript verificado sintaticamente; pacote 0.3 instalado em modo editável. Testes adicionais cobrem query por conceitos, anatomias distintas, escopo manual, respostas Crossref inválidas versus vazias, origem do depositante, sinônimos, ausência de resumo, redirects, DOI duplicado e cartas “de próprio punho” fora da síntese. Europe PMC tem repetição limitada para respostas incompletas, coberta por teste.
