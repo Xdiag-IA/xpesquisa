@@ -24,9 +24,34 @@ são lidos com o padrão sem precisar de migração de schema. A checagem por
 Europe PMC (`identifier_status`) continua existindo sem alteração; a nova
 checagem é um segundo sinal independente, não substitui o primeiro.
 
-Comparação de título usa forma normalizada (minúsculas, sem acento, sem
-pontuação) para não marcar `mismatch` só por diferença de formatação entre
-fontes.
+Comparação de título remove marcação HTML antes de normalizar (mesmo
+`plain_text` de `connectors.py`) e só então aplica a forma normalizada
+(minúsculas, sem acento, sem pontuação). Sem esse passo, uma tag como `<i>`
+deixaria uma letra solta ("i") no texto comparado e produziria `mismatch`
+falso — por exemplo em `"Effects of <i>Helicobacter pylori</i>..."`.
+
+DOI recuperado do próprio Crossref (fontes com `collection ==
+"CROSSREF_SCIELO"`, ver `crossref.py`) não é verificado em `doi.org`: a
+resolução consultaria a mesma origem que já gerou o registro, não seria uma
+segunda fonte independente. Essas fontes ficam `not_checked` para o campo
+`independent_doi_status`, coerente com a limitação já documentada em
+`docs/research/expansion-0.3.md` e `THIRD_PARTY_NOTICES.md`.
+
+O cliente HTTP do projeto não segue redirecionamentos por padrão
+(`follow_redirects=False`, mesmo princípio de `crossref.py`/`brazil.py`). Na
+checagem de DOI, um redirecionamento do `doi.org` só é seguido quando o
+destino é um servidor de metadados conhecido do Crossref ou da DataCite
+(`api.crossref.org`, `data.crosscite.org`, `api.datacite.org`); qualquer
+outro destino (ex.: página do editor) é tratado como `unavailable`, sem
+seguir.
+
+Circuito por pesquisa: dentro de uma única chamada a `check_sources`
+(equivalente a uma pesquisa), assim que `doi.org` ou o NCBI falhar uma vez
+(erro HTTP/rede), as fontes seguintes do mesmo serviço nessa mesma pesquisa
+são marcadas `unavailable` sem nova tentativa de rede — os dois serviços têm
+circuitos independentes entre si. Isso evita insistir contra um serviço já
+sabidamente indisponível dentro da mesma execução; uma pesquisa nova
+recomeça com o circuito fechado.
 
 Seguimos as políticas de uso publicadas por cada fonte: identificação da
 ferramenta (`User-Agent` descritivo e parâmetro `tool` no NCBI) e
@@ -39,7 +64,10 @@ princípio do "polite pool" da Crossref).
 Fontes externas indisponíveis marcam `unavailable` e não bloqueiam a
 pesquisa nem apagam a checagem já feita na Europe PMC — o padrão de falha
 parcial já usado no restante do pipeline. A resolução cobre apenas fontes
-com DOI ou PMID; Crossref (metadados do depositante SciELO) e documentos
-institucionais continuam sem verificação independente nesta entrega. Duas
-novas dependências externas de rede em tempo de execução (doi.org,
-eutils.ncbi.nlm.nih.gov); nenhuma nova biblioteca de terceiros.
+com DOI ou PMID que não vieram do próprio Crossref; Crossref/SciELO e
+documentos institucionais continuam sem verificação independente nesta
+entrega. O circuito por pesquisa reduz o número de tentativas de rede contra
+um serviço indisponível, ao custo de não recuperar uma falha transitória de
+uma única requisição dentro da mesma pesquisa (uma pesquisa seguinte tenta
+de novo). Duas novas dependências externas de rede em tempo de execução
+(doi.org, eutils.ncbi.nlm.nih.gov); nenhuma nova biblioteca de terceiros.

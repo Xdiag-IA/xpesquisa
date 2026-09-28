@@ -118,9 +118,9 @@ async def execute(run: Run, store: Store, connector: EuropePMC, provider: Synthe
             if source.collection in {"MED", "PMC", "PPR", "AGR", "CBA", "CTX", "ETH", "HIR", "NBK", "PAT"}:
                 record("identifier_check", **await connector.check_identifier(source))
         if identity is not None:
-            for source in run.sources:
+            for source, detail in zip(run.sources, await identity.check_sources(run.sources)):
                 if source.doi or source.pmid:
-                    record("independent_identifier_check", **await identity.check(source))
+                    record("independent_identifier_check", **detail)
         run.evidence = extract(run)
         record("extraction", evidence_ids=[e.id for e in run.evidence],
                source_links={e.id: e.source_id for e in run.evidence}, method="typed-excerpt-v2",
