@@ -1,12 +1,12 @@
 # Estado do XPesquisa
 
 ## Incremento atual — resolução independente de DOI/PMID
-- `identity.py`: verificação de DOI via doi.org (CSL-JSON) e de PMID via NCBI E-utilities `esummary`, além da reconfirmação já existente na própria Europe PMC. Comparação de título remove marcação HTML (mesmo `plain_text` do conector Europe PMC) antes de normalizar, para tag como `<i>` não virar mismatch falso.
+- `identity.py`: verificação de DOI via doi.org (CSL-JSON) e de PMID via NCBI E-utilities `esummary`, além da reconfirmação já existente na própria Europe PMC. Comparação de título remove marcação HTML (mesmo `plain_text` do conector Europe PMC), normaliza e ignora espaços — cobre tanto tag solta (`<i>`) quanto tag colada à palavra seguinte sem espaço, caso real observado no DOI 10.1155/2014/642391.
 - DOI que já veio do próprio Crossref (`collection == "CROSSREF_SCIELO"`) não é verificado em doi.org: seria a mesma origem, não uma segunda fonte independente. Fica `not_checked`.
 - Campos novos em `Source`: `independent_doi_status` e `independent_pmid_status`, com padrão `"not_checked"`. Registros antigos persistidos em JSON continuam legíveis sem migração de schema.
-- Identificação da ferramenta e limite de requisições respeitados: `User-Agent` descritivo e 1 req/s para doi.org; parâmetro `tool=xpesquisa` e até 3 req/s para NCBI. Cliente não segue redirecionamentos por padrão; na checagem de DOI, só segue um redirecionamento do doi.org quando o destino é um servidor de metadados conhecido do Crossref/DataCite. Ver ADR 0010 e THIRD_PARTY_NOTICES.md.
-- Falha de rede em qualquer uma das duas fontes marca `unavailable` e não interrompe a pesquisa nem apaga a checagem já feita pela Europe PMC. Dentro da mesma pesquisa, depois da primeira falha de um serviço, as fontes seguintes desse serviço são marcadas `unavailable` sem nova tentativa de rede (circuito por pesquisa; DOI e PMID têm circuitos independentes entre si).
-- 80 testes passaram (73 anteriores + 7 novos em `tests/test_identity.py`), sem rede. Detalhes em docs/validation.md.
+- Identificação da ferramenta e limite de requisições respeitados: `User-Agent` descritivo e 1 req/s para doi.org; parâmetro `tool=xpesquisa` e até 3 req/s para NCBI. Cliente não segue redirecionamentos por padrão; na checagem de DOI, só segue um redirecionamento do doi.org quando o esquema é HTTPS e o destino é um servidor de metadados conhecido do Crossref/DataCite — redirecionamento HTTP não é seguido mesmo para um host permitido. Ver ADR 0010 e THIRD_PARTY_NOTICES.md.
+- Falha de rede em qualquer uma das duas fontes marca `unavailable` e não interrompe a pesquisa nem apaga a checagem já feita pela Europe PMC. Circuito por pesquisa só abre com problema do **serviço** (erro de rede, tempo esgotado, 5xx ou 429); um 4xx isolado (ex.: 406) ou um redirecionamento fora da lista marca só aquele DOI/PMID, sem abrir o circuito — o registro seguinte da mesma pesquisa ainda é checado. DOI e PMID têm circuitos independentes entre si.
+- 85 testes passaram (80 anteriores + 5 novos em `tests/test_identity.py`), sem rede. Detalhes em docs/validation.md.
 - Ainda não cobertos: Crossref (metadados do depositante SciELO) e documentos institucionais não têm resolução independente.
 
 ## Incremento 0.3 — busca por conceitos e ampliação brasileira

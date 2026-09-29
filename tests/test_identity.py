@@ -291,3 +291,97 @@ def test_doi_redirect_to_untrusted_host_is_not_followed():
     asyncio.run(scenario())
     # Nenhuma segunda chamada foi feita ao destino não confiável.
     assert len(calls) == 1
+
+
+def test_html_tag_glued_to_word_does_not_cause_false_mismatch():
+    # Caso real: DOI 10.1155/2014/642391. Crossref devolve a tag colada à
+    # palavra seguinte, sem espaço; Europe PMC devolve o mesmo título com
+    # espaço. Comparação deve ignorar espaços para não dar mismatch falso.
+    src = source(doi="10.1155/2014/642391",
+                 title="Antibody Responses against Plasmodium falciparum Antigen")
+
+    def handler(request):
+        return httpx.Response(200, json={
+            "title": "Antibody Responses against<i>Plasmodium falciparum</i>Antigen"})
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            identity = IndependentIdentity(client, doi_limiter=RateLimiter(0), pubmed_limiter=RateLimiter(0))
+            detail = await identity.check(src)
+            assert detail["doi_status"] == "matched"
+            assert src.independent_doi_status == "matched"
+    asyncio.run(scenario())
+
+
+def test_4xx_or_redirect_outside_allowlist_marks_only_that_doi_not_the_circuit():
+    # DOI "a": redirecionamento para uma editora (fora da lista) -> unavailable,
+    # mas não deve abrir o circuito. DOI "b": resolvido normalmente -> matched.
+    sources = [source(id="a", doi="10.1234/a"), source(id="b", doi="10.1234/b")]
+
+    def handler(request):
+        if request.url.path == "/10.1234/a":
+            return httpx.Response(302, headers={"Location": "https://publisher.example/paper/a"})
+        return httpx.Response(200, json={"title": "Synthetic Test Study"})
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            identity = IndependentIdentity(client, doi_limiter=RateLimiter(0), pubmed_limiter=RateLimiter(0))
+            details = await identity.check_sources(sources)
+            assert details[0]["doi_status"] == "unavailable"
+            assert details[1]["doi_status"] == "matched"
+    asyncio.run(scenario())
+
+
+def test_406_marks_only_that_doi_not_the_circuit():
+    sources = [source(id="a", doi="10.1234/a"), source(id="b", doi="10.1234/b")]
+
+    def handler(request):
+        if request.url.path == "/10.1234/a":
+            return httpx.Response(406)
+        return httpx.Response(200, json={"title": "Synthetic Test Study"})
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            identity = IndependentIdentity(client, doi_limiter=RateLimiter(0), pubmed_limiter=RateLimiter(0))
+            details = await identity.check_sources(sources)
+            assert details[0]["doi_status"] == "unavailable"
+            assert details[1]["doi_status"] == "matched"
+    asyncio.run(scenario())
+
+
+def test_5xx_and_429_open_the_circuit():
+    sources = [source(id="a", doi="10.1234/a"), source(id="b", doi="10.1234/b")]
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(503)
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            identity = IndependentIdentity(client, doi_limiter=RateLimiter(0), pubmed_limiter=RateLimiter(0))
+            details = await identity.check_sources(sources)
+            assert details[0]["doi_status"] == "unavailable"
+            assert details[1]["doi_status"] == "unavailable"
+    asyncio.run(scenario())
+    # A segunda fonte não tentou a rede: o circuito abriu no 503 da primeira.
+    assert len(calls) == 1
+
+
+def test_doi_redirect_to_http_is_not_followed_even_to_allowed_host():
+    src = source(doi="10.1234/synthetic")
+    calls = []
+
+    def handler(request):
+        calls.append(str(request.url))
+        return httpx.Response(302, headers={"Location": "http://api.crossref.org/works/10.1234/synthetic"})
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            identity = IndependentIdentity(client, doi_limiter=RateLimiter(0), pubmed_limiter=RateLimiter(0))
+            detail = await identity.check(src)
+            assert detail["doi_status"] == "unavailable"
+            assert src.independent_doi_status == "unavailable"
+    asyncio.run(scenario())
+    # Nenhuma segunda chamada: http não é seguido mesmo para host permitido.
+    assert len(calls) == 1
