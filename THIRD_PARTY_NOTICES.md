@@ -23,3 +23,14 @@ Incremento 0.2: conectores originais para busca pública CFM/CRMs e APIs públic
 # Incremento 0.3
 
 Conector original para a API pública Crossref e extensão do conector WordPress para SBUS. Nenhuma nova biblioteca adicionada. Metadados Crossref e eventuais abstracts têm condições distintas; abstracts e publicações institucionais podem manter direitos próprios. Documentação e fontes consultadas em `docs/research/expansion-0.3.md`.
+
+# Incremento — resolução independente de DOI/PMID
+
+Módulo original `identity.py`, sem novas dependências de terceiros. Consulta metadados públicos de duas fontes, ambas sem chave obrigatória:
+
+- [doi.org](https://www.doi.org/) — negociação de conteúdo CSL-JSON, mantida por Crossref/DataCite. Sem limite numérico publicado para doi.org; adotado espaçamento cortês de 1 req/s por conta própria, seguindo o princípio do "polite pool" documentado pela Crossref (https://api.crossref.org/swagger-ui/index.html#/Works). O cliente HTTP do projeto não segue redirecionamentos por padrão; um redirecionamento do doi.org só é seguido quando o esquema é HTTPS e aponta para um servidor de metadados conhecido do Crossref ou da DataCite (`api.crossref.org`, `data.crosscite.org`, `api.datacite.org`) — outro esquema ou destino é tratado como indisponível, sem seguir.
+- [NCBI E-utilities](https://www.ncbi.nlm.nih.gov/books/NBK25497/) (`esummary`, PubMed) — limite publicado de 3 requisições/segundo sem chave de API; identificação da ferramenta enviada via parâmetro `tool=xpesquisa` e `User-Agent` descritivo.
+
+DOI recuperado do próprio Crossref (registros do depositante SciELO) não é verificado em doi.org: seria a mesma origem que já gerou o registro, não uma segunda fonte independente. Dentro de uma mesma pesquisa, depois da primeira falha de **serviço** (erro de rede, tempo esgotado, HTTP 5xx ou 429) de doi.org ou do NCBI, as fontes seguintes do mesmo serviço não tentam nova requisição — reduz o número de chamadas contra um serviço já indisponível. Uma recusa 4xx isolada (ex.: 406) ou um redirecionamento para destino fora da lista permitida marcam só aquele DOI/PMID, sem afetar a checagem dos registros seguintes da mesma pesquisa.
+
+Nenhum dado de paciente é enviado; apenas DOI/PMID e título já recuperados de fontes públicas anteriores (Europe PMC). Metadados retornados (título) usados só para comparação, não armazenados além do necessário à checagem.

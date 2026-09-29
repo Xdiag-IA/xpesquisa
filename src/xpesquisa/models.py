@@ -85,6 +85,8 @@ class Source(Record):
     response_sha256: str
     metadata_status: Literal["retrieved"] = "retrieved"
     identifier_status: Literal["not_checked", "matched", "mismatch", "unavailable"] = "not_checked"
+    independent_doi_status: Literal["not_checked", "matched", "mismatch", "unavailable"] = "not_checked"
+    independent_pmid_status: Literal["not_checked", "matched", "mismatch", "unavailable"] = "not_checked"
     document_type: Literal["scientific_article", "regulation", "institutional"] = "scientific_article"
     content_kind: Literal["abstract", "ementa", "institutional_text"] = "abstract"
     institution_country: str | None = None

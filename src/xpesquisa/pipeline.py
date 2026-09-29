@@ -4,6 +4,7 @@ import re
 from .brazil import AccessBlocked, BrazilSearch
 from .connectors import ConnectorError, EuropePMC
 from .crossref import SciELODeposits, lexical_match
+from .identity import IndependentIdentity
 from .models import Coverage, Event, Evidence, Run, validate_links
 from .planning import brazil_terms, normalized, plan_research, ultrasound_anatomy
 from .providers import ExtractiveProvider, SynthesisProvider
@@ -65,7 +66,8 @@ def extract(run: Run) -> list[Evidence]:
     return result
 
 
-async def execute(run: Run, store: Store, connector: EuropePMC, provider: SynthesisProvider):
+async def execute(run: Run, store: Store, connector: EuropePMC, provider: SynthesisProvider,
+                   identity: IndependentIdentity | None = None):
     def record(stage: str, **detail):
         run.events.append(Event(stage=stage, detail=detail))
         store.save(run)
@@ -115,13 +117,17 @@ async def execute(run: Run, store: Store, connector: EuropePMC, provider: Synthe
         for source in run.sources:
             if source.collection in {"MED", "PMC", "PPR", "AGR", "CBA", "CTX", "ETH", "HIR", "NBK", "PAT"}:
                 record("identifier_check", **await connector.check_identifier(source))
+        if identity is not None:
+            for source, detail in zip(run.sources, await identity.check_sources(run.sources)):
+                if source.doi or source.pmid:
+                    record("independent_identifier_check", **detail)
         run.evidence = extract(run)
         record("extraction", evidence_ids=[e.id for e in run.evidence],
                source_links={e.id: e.source_id for e in run.evidence}, method="typed-excerpt-v2",
                selection_notes={s.id: s.selection_note for s in run.sources if s.selection_note})
         run.limitations = run.plan.limitations + [
             "Busca exploratória limitada por fonte; não é revisão sistemática nem levantamento normativo completo.",
-            "Somente registros Europe PMC passam pela reconferência na mesma base; Crossref e documentos institucionais não têm verificação independente.",
+            "Somente registros Europe PMC passam pela reconferência na mesma base. Registros com DOI ou PMID podem ainda receber resolução independente via DOI.org/PubMed; documentos institucionais e Crossref não têm nenhuma verificação independente.",
             "Trecho literal conferido não significa suporte semântico ou validade clínica verificados.",
             "Risco de viés, tamanho amostral, GRADE, retratações e aplicabilidade ao Brasil não foram avaliados.",
             "Não houve busca ativa de evidência contrária; discordâncias ainda não avaliadas.",
